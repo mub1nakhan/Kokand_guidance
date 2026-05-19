@@ -1,970 +1,1194 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Joylar — Kokand{% endblock %}
+{% block title %}Joylar — Kokand Guidance{% endblock %}
 {% block meta_description %}Kokandning barcha tarixiy joylari, restoranlari, masjidlari va ko'rkam maskanlari ro'yxati.{% endblock %}
 
 {% block extra_css %}
 <style>
-/* ══ PAGE HERO ══ */
-.page-hero {
-  background: linear-gradient(135deg, var(--teal-dk) 0%, #0a2420 100%);
-  padding: 56px 5% 48px;
+
+/* ════════════════════════════════════════════════════════
+   PLACES PAGE — Premium Editorial Design
+   Rang sxemasi: loyihadan olingan --gold, --teal tokenlar
+════════════════════════════════════════════════════════ */
+
+/* ── HERO BANNER ── */
+.ph {
+  background: var(--teal-dk);
   position: relative;
   overflow: hidden;
+  padding: 64px 6% 56px;
 }
-.page-hero::before {
+.ph::before {
   content: '';
   position: absolute;
   inset: 0;
-  opacity: .04;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l8.66 15H21.34L30 0zm0 60l-8.66-15h17.32L30 60zM0 30l15-8.66v17.32L0 30zm60 0l-15 8.66V21.34L60 30z' fill='%23C9912A'/%3E%3C/svg%3E");
+  background:
+    radial-gradient(ellipse 60% 80% at 110% 50%, rgba(201,145,42,.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at -10% 80%, rgba(26,122,110,.4) 0%, transparent 60%);
 }
-.page-hero__inner {
+/* Islomiy naqsh */
+.ph__pattern {
+  position: absolute;
+  inset: 0;
+  opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C9912A' fill-rule='evenodd'%3E%3Cpath d='M40 0l10.93 20H29.07L40 0zm0 80L29.07 60h21.86L40 80zM0 40l20-11.55v23.1L0 40zm80 0L60 51.55V28.45L80 40zM40 28l12 6.93v13.86L40 56l-12-7.21V34.93L40 28z'/%3E%3C/g%3E%3C/svg%3E");
+}
+.ph__inner {
   position: relative;
   z-index: 1;
-  max-width: 680px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
 }
-.page-hero__breadcrumb {
+.ph__bread {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
-  color: rgba(255,255,255,.45);
-  margin-bottom: 18px;
+  font-size: 12px;
+  color: rgba(255,255,255,.4);
+  margin-bottom: 20px;
+  letter-spacing: .04em;
 }
-.page-hero__breadcrumb a { color: rgba(255,255,255,.55); transition: color .2s; }
-.page-hero__breadcrumb a:hover { color: var(--gold-lt); }
-.page-hero__breadcrumb span { color: rgba(255,255,255,.25); }
-.page-hero h1 {
-  font-size: clamp(28px, 4vw, 48px);
+.ph__bread a {
+  color: rgba(255,255,255,.5);
+  text-decoration: none;
+  transition: color .2s;
+}
+.ph__bread a:hover { color: var(--gold-lt); }
+.ph__bread .sep { opacity: .3; }
+.ph__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--white);
-  margin-bottom: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gold-lt);
+  margin-bottom: 14px;
 }
-.page-hero p { font-size: 16px; color: rgba(255,255,255,.6); }
+.ph__eyebrow::before {
+  content: '';
+  width: 20px; height: 2px;
+  background: var(--gold);
+  border-radius: 2px;
+}
+.ph h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(34px, 4.5vw, 56px);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.08;
+  margin-bottom: 14px;
+  letter-spacing: -.02em;
+}
+.ph h1 em {
+  font-style: italic;
+  color: var(--gold-lt);
+}
+.ph__sub {
+  font-size: 16px;
+  color: rgba(255,255,255,.55);
+  line-height: 1.6;
+  max-width: 480px;
+}
+.ph__stats {
+  display: flex;
+  gap: 28px;
+  flex-shrink: 0;
+  align-self: center;
+}
+.ph__stat { text-align: center; }
+.ph__stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--gold-lt);
+  display: block;
+  line-height: 1;
+}
+.ph__stat-lbl {
+  font-size: 11px;
+  color: rgba(255,255,255,.4);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-top: 4px;
+  display: block;
+}
+.ph__stat-divider {
+  width: 1px;
+  height: 48px;
+  background: rgba(255,255,255,.12);
+  align-self: center;
+}
 
-/* ══ TOOLBAR ══ */
-.toolbar {
+/* ── SEARCH & CONTROLS BAR ── */
+.controls-bar {
   background: var(--white);
   border-bottom: 1px solid var(--border);
-  padding: 0 5%;
   position: sticky;
   top: var(--nav-h);
-  z-index: 100;
+  z-index: 200;
+  box-shadow: 0 2px 12px rgba(28,26,22,.06);
 }
-.toolbar__inner {
+.controls-bar__inner {
   display: flex;
   align-items: center;
-  gap: 12px;
-  height: 64px;
-  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 6%;
 }
-.toolbar__search {
+.search-box {
   display: flex;
   align-items: center;
   gap: 10px;
   flex: 1;
-  min-width: 200px;
   background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0 16px;
-  height: 42px;
-  transition: border-color .2s, box-shadow .2s;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  padding: 0 18px;
+  height: 46px;
+  transition: border-color .25s, box-shadow .25s;
+  min-width: 0;
 }
-.toolbar__search:focus-within {
+.search-box:focus-within {
   border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(26,122,110,.12);
+  box-shadow: 0 0 0 4px rgba(26,122,110,.1);
+  background: var(--white);
 }
-.toolbar__search-icon { font-size: 16px; color: var(--ink3); flex-shrink: 0; }
-.toolbar__search input {
+.search-box__icon { font-size: 16px; color: var(--ink3); flex-shrink: 0; }
+.search-box input {
   flex: 1;
   border: none;
   background: transparent;
+  font-family: 'DM Sans', sans-serif;
   font-size: 14px;
   color: var(--ink);
   outline: none;
+  min-width: 0;
 }
-.toolbar__search input::placeholder { color: var(--ink3); }
-.toolbar__search-clear {
-  background: none;
+.search-box input::placeholder { color: var(--ink3); }
+.search-box__clear {
+  background: var(--bg2);
   border: none;
+  border-radius: 50%;
+  width: 22px; height: 22px;
+  font-size: 12px;
   color: var(--ink3);
-  font-size: 16px;
-  padding: 0;
-  display: none;
   cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background .2s;
 }
-.toolbar__search-clear.visible { display: block; }
+.search-box__clear.show { display: flex; }
+.search-box__clear:hover { background: var(--bg3); color: var(--ink); }
 
-.toolbar__select {
-  height: 42px;
-  padding: 0 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+.ctrl-select {
+  height: 46px;
+  padding: 0 36px 0 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
   background: var(--bg);
   font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--ink2);
   cursor: pointer;
   outline: none;
-  transition: border-color .2s;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%238C8070' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath fill='%238C8070' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 32px;
-}
-.toolbar__select:focus { border-color: var(--teal); }
-
-.toolbar__count {
-  font-size: 13px;
-  color: var(--ink3);
+  background-position: right 12px center;
+  transition: border-color .2s;
   white-space: nowrap;
-  margin-left: auto;
-}
-.toolbar__count strong { color: var(--ink); font-weight: 600; }
-
-/* ══ FILTER CHIPS ══ */
-.filter-chips {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 5%;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.filter-chips::-webkit-scrollbar { display: none; }
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 100px;
-  font-size: 13px;
-  font-weight: 500;
-  white-space: nowrap;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  background: var(--white);
-  color: var(--ink2);
-  transition: all .2s;
-}
-.chip:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-bg); }
-.chip.active { border-color: var(--teal); background: var(--teal); color: var(--white); }
-.chip__count {
-  font-size: 11px;
-  font-weight: 700;
-  background: rgba(255,255,255,.25);
-  padding: 1px 6px;
-  border-radius: 100px;
-}
-.chip.active .chip__count { background: rgba(255,255,255,.3); }
-
-/* ══ LAYOUT ══ */
-.places-page { padding: 36px 5% 72px; }
-.places-layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 32px;
-  align-items: start;
-}
-
-/* ══ SIDEBAR FILTERS ══ */
-.sidebar {
-  position: sticky;
-  top: calc(var(--nav-h) + 130px);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.filter-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-}
-.filter-card__title {
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  color: var(--ink3);
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.filter-card__clear {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--teal);
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-transform: none;
-  letter-spacing: 0;
-}
-.filter-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 10px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background .15s;
-  font-size: 14px;
-  color: var(--ink2);
-}
-.filter-option:hover { background: var(--bg2); }
-.filter-option input[type="checkbox"],
-.filter-option input[type="radio"] {
-  width: 16px; height: 16px;
-  accent-color: var(--teal);
-  cursor: pointer;
   flex-shrink: 0;
 }
-.filter-option .label-text { flex: 1; }
-.filter-option .label-count {
-  font-size: 12px;
-  color: var(--ink3);
-  background: var(--bg2);
-  padding: 2px 8px;
-  border-radius: 100px;
-}
+.ctrl-select:focus { border-color: var(--teal); }
 
-/* Rating filter */
-.rating-bar {
+.view-btns {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 0;
-}
-.rating-stars { color: var(--gold); font-size: 14px; letter-spacing: 1px; }
-.rating-bar-fill {
-  flex: 1;
-  height: 6px;
-  background: var(--bg2);
-  border-radius: 3px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
   overflow: hidden;
+  flex-shrink: 0;
 }
-.rating-bar-inner { height: 100%; background: var(--gold); border-radius: 3px; }
-.rating-num { font-size: 12px; color: var(--ink3); min-width: 28px; text-align: right; }
-
-/* Price level */
-.price-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.price-option {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 10px;
-  text-align: center;
+.view-btn {
+  width: 40px; height: 42px;
+  border: none;
+  background: var(--bg);
+  font-size: 15px;
+  color: var(--ink3);
   cursor: pointer;
+  transition: background .2s, color .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.view-btn + .view-btn { border-left: 1px solid var(--border); }
+.view-btn.on { background: var(--teal-dk); color: var(--white); }
+
+.ctrl-filter-btn {
+  display: none;
+  align-items: center;
+  gap: 7px;
+  height: 46px;
+  padding: 0 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: var(--ink3);
-  transition: all .2s;
-  background: var(--bg);
+  color: var(--ink2);
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
-.price-option:hover { border-color: var(--teal); color: var(--teal); }
-.price-option.active {
+.ctrl-filter-btn.active {
   border-color: var(--teal);
   background: var(--teal);
   color: var(--white);
 }
-.price-option .price-sym { display: block; font-size: 18px; margin-bottom: 2px; }
-.price-option .price-lbl { font-size: 11px; font-weight: 400; }
-
-/* ══ PLACES GRID ══ */
-.places-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-}
-.places-grid--list {
-  grid-template-columns: 1fr;
-}
-
-/* PLACE CARD */
-.place-card {
+.ctrl-filter-btn__dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
   background: var(--white);
-  border-radius: var(--radius-lg);
+  display: none;
+}
+.ctrl-filter-btn.active .ctrl-filter-btn__dot { display: block; }
+
+/* ── CATEGORY TABS ── */
+.cat-tabs {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: calc(var(--nav-h) + 70px);
+  z-index: 199;
   overflow: hidden;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
-  transition: transform .3s, box-shadow .3s;
-  text-decoration: none;
-  color: inherit;
+}
+.cat-tabs__scroll {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0 6%;
+}
+.cat-tabs__scroll::-webkit-scrollbar { display: none; }
+.cat-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 14px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink3);
+  background: none;
+  border: none;
+  border-bottom: 2.5px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .2s, border-color .2s;
+  flex-shrink: 0;
+}
+.cat-tab:hover { color: var(--ink); border-bottom-color: var(--border); }
+.cat-tab.on { color: var(--teal-dk); border-bottom-color: var(--teal); }
+.cat-tab__count {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 100px;
+  background: var(--bg2);
+  color: var(--ink3);
+}
+.cat-tab.on .cat-tab__count {
+  background: var(--teal-bg);
+  color: var(--teal-dk);
+}
+
+/* ── LAYOUT ── */
+.pl-page { padding: 32px 6% 100px; }
+.pl-layout {
+  display: grid;
+  grid-template-columns: 252px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* ── SIDEBAR ── */
+.pl-sidebar {
+  position: sticky;
+  top: calc(var(--nav-h) + 70px + 46px + 18px);
   display: flex;
   flex-direction: column;
-}
-.place-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
-
-.places-grid--list .place-card {
-  flex-direction: row;
-  height: 160px;
+  gap: 12px;
 }
 
-.place-card__img {
+.fcard {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.fcard__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.fcard__title {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--ink3);
+}
+.fcard__reset {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--teal);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'DM Sans', sans-serif;
+}
+.fcard__reset:hover { text-decoration: underline; }
+.fcard__body { padding: 10px; }
+
+/* Price buttons */
+.price-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.price-btn {
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--bg);
+  transition: all .2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.price-btn:hover { border-color: var(--teal); background: var(--teal-bg); }
+.price-btn.on { border-color: var(--teal-dk); background: var(--teal-dk); }
+.price-btn__sym { font-size: 20px; display: block; margin-bottom: 4px; line-height: 1; }
+.price-btn__lbl { font-size: 11px; font-weight: 700; color: var(--ink3); text-transform: uppercase; letter-spacing: .06em; }
+.price-btn.on .price-btn__lbl { color: rgba(255,255,255,.85); }
+
+/* Rating rows */
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.rating-row:hover { background: var(--bg2); }
+.rating-row.on { background: rgba(201,145,42,.1); }
+.rating-row__stars { font-size: 13px; color: var(--gold); letter-spacing: 1px; flex-shrink: 0; }
+.rating-row__bar { flex: 1; height: 4px; border-radius: 2px; background: var(--bg2); overflow: hidden; }
+.rating-row__fill { height: 100%; border-radius: 2px; background: linear-gradient(to right, var(--gold-dk), var(--gold)); }
+.rating-row__num { font-size: 11px; font-weight: 700; color: var(--ink3); width: 22px; text-align: right; }
+
+/* Featured toggle */
+.feat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 8px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background .15s;
+}
+.feat-row:hover { background: var(--bg2); }
+.feat-row__label { font-size: 14px; color: var(--ink2); font-weight: 500; }
+.pill-toggle {
+  width: 40px; height: 22px;
+  border-radius: 100px;
+  background: var(--border);
+  position: relative;
+  transition: background .25s;
+  flex-shrink: 0;
+}
+.pill-toggle.on { background: var(--teal); }
+.pill-toggle__thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  transition: left .25s;
+}
+.pill-toggle.on .pill-toggle__thumb { left: 21px; }
+
+/* ── APPLIED FILTER TAGS ── */
+.applied-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.applied-strip:empty { display: none; }
+.applied-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teal-dk);
+  background: var(--teal-bg);
+  border: 1px solid rgba(26,122,110,.2);
+  padding: 5px 12px 5px 14px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.applied-tag:hover { background: rgba(26,122,110,.15); }
+.applied-tag__x { font-size: 10px; font-weight: 900; color: var(--teal); }
+.clear-all {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  text-decoration: underline;
+  padding: 4px;
+}
+.clear-all:hover { color: var(--ink); }
+
+/* ── RESULTS META ── */
+.results-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+.results-meta__count { font-size: 15px; color: var(--ink3); }
+.results-meta__count strong { color: var(--ink); font-weight: 700; }
+
+/* ── CARDS GRID ── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 20px;
+}
+.cards-grid.is-list { grid-template-columns: 1fr; }
+
+/* ── PLACE CARD ── */
+.pcard {
+  background: var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .3s cubic-bezier(.2,0,.1,1), box-shadow .3s;
+  position: relative;
+}
+.pcard:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 24px 56px rgba(28,26,22,.13);
+}
+.is-list .pcard { flex-direction: row; height: 168px; }
+
+.pcard__img {
   position: relative;
   height: 200px;
   overflow: hidden;
   flex-shrink: 0;
+  background: var(--bg2);
 }
-.places-grid--list .place-card__img { width: 240px; height: 100%; }
-
-.place-card__img img {
+.is-list .pcard__img { width: 232px; height: 100%; }
+.pcard__img img {
   width: 100%; height: 100%;
   object-fit: cover;
-  transition: transform .5s;
+  display: block;
+  transition: transform .55s cubic-bezier(.2,0,.1,1);
 }
-.place-card:hover .place-card__img img { transform: scale(1.06); }
-
-.place-card__no-img {
+.pcard:hover .pcard__img img { transform: scale(1.07); }
+.pcard__img-placeholder {
   width: 100%; height: 100%;
-  background: var(--bg2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   font-size: 48px;
+  background: linear-gradient(135deg, var(--bg2), var(--bg3));
 }
-.place-card__badge {
+.pcard__featured {
   position: absolute;
   top: 12px; left: 12px;
   background: var(--gold);
   color: var(--white);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .06em;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 100px;
-}
-.place-card__fav {
-  position: absolute;
-  top: 10px; right: 10px;
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.9);
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  display: flex; align-items: center; justify-content: center;
-  backdrop-filter: blur(8px);
-  transition: transform .2s, background .2s;
   z-index: 1;
 }
-.place-card__fav:hover { transform: scale(1.18); background: var(--white); }
-.place-card__fav.is-active { color: #e74c3c; }
+.pcard__fav {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.9);
+  backdrop-filter: blur(8px);
+  border: none;
+  cursor: pointer;
+  font-size: 17px;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .2s, background .2s;
+  z-index: 1;
+  color: var(--ink3);
+}
+.pcard__fav:hover { transform: scale(1.2); background: var(--white); }
+.pcard__fav.loved { color: #e74c3c; }
 
-.place-card__body {
+.pcard__body {
   padding: 18px 20px 20px;
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-width: 0;
 }
-.place-card__cat {
-  font-size: 11px;
-  font-weight: 700;
+.pcard__cat {
+  font-size: 10px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: .08em;
+  letter-spacing: .1em;
   color: var(--teal);
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
-.place-card__title {
-  font-size: 17px;
+.pcard__title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
   font-weight: 700;
   color: var(--ink);
   line-height: 1.25;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
-.place-card__desc {
+.is-list .pcard__title { font-size: 16px; }
+.pcard__desc {
   font-size: 13px;
   color: var(--ink3);
-  line-height: 1.55;
+  line-height: 1.6;
   flex: 1;
   margin-bottom: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
-.place-card__meta {
+.pcard__tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+.ptag {
+  font-size: 11px;
+  color: var(--ink3);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 3px 9px;
+  border-radius: 100px;
+  font-weight: 500;
+}
+.pcard__foot {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 12px;
+  padding-top: 13px;
   border-top: 1px solid var(--border);
+  gap: 8px;
 }
-.place-card__rating {
+.pcard__rating {
   display: flex;
   align-items: center;
   gap: 5px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ink);
 }
-.place-card__rating .stars { color: var(--gold); }
-.place-card__rating small { font-weight: 400; color: var(--ink3); }
-.place-card__price {
+.pcard__stars { color: var(--gold); font-size: 12px; }
+.pcard__reviews { font-weight: 400; color: var(--ink3); font-size: 12px; }
+.pcard__price {
   font-size: 12px;
-  font-weight: 600;
-  color: var(--teal);
+  font-weight: 700;
+  color: var(--teal-dk);
   background: var(--teal-bg);
-  padding: 4px 10px;
+  border: 1px solid rgba(26,122,110,.18);
+  padding: 4px 11px;
   border-radius: 100px;
+  white-space: nowrap;
 }
 
-/* Tags */
-.place-card__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+/* ── SKELETON ── */
+.skel-card {
+  background: var(--white);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.skel-img {
+  height: 200px;
+  background: linear-gradient(90deg, var(--bg2) 25%, var(--bg3) 50%, var(--bg2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+.skel-body { padding: 18px 20px; }
+.skel-line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--bg2) 25%, var(--bg3) 50%, var(--bg2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
   margin-bottom: 10px;
 }
-.tag {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--ink3);
-  background: var(--bg2);
-  padding: 3px 8px;
-  border-radius: 100px;
-  border: 1px solid var(--border);
+.skel-line.s { width: 55%; }
+.skel-line.m { width: 80%; }
+.skel-line.f { width: 100%; }
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-/* ══ EMPTY STATE ══ */
-.empty-state {
-  grid-column: 1 / -1;
+/* ── EMPTY STATE ── */
+.empty-box {
+  grid-column: 1/-1;
   text-align: center;
   padding: 80px 20px;
 }
-.empty-state__icon { font-size: 56px; margin-bottom: 20px; }
-.empty-state h3 {
-  font-size: 22px;
+.empty-box__icon { font-size: 60px; margin-bottom: 20px; opacity: .8; }
+.empty-box h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
   font-weight: 700;
   color: var(--ink);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
-.empty-state p { font-size: 15px; color: var(--ink3); margin-bottom: 24px; }
+.empty-box p {
+  font-size: 15px;
+  color: var(--ink3);
+  max-width: 340px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
 
-/* ══ PAGINATION ══ */
-.pagination {
+/* ── PAGINATION ── */
+.pgn {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   margin-top: 48px;
+  flex-wrap: wrap;
 }
-.page-btn {
-  width: 40px; height: 40px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
+.pgn__btn {
+  min-width: 42px; height: 42px;
+  padding: 0 10px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
   background: var(--white);
+  font-family: 'DM Sans', sans-serif;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--ink2);
   cursor: pointer;
   transition: all .2s;
   display: flex; align-items: center; justify-content: center;
 }
-.page-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-bg); }
-.page-btn.active { background: var(--teal); border-color: var(--teal); color: var(--white); }
-.page-btn:disabled { opacity: .4; cursor: not-allowed; }
-.page-dots { color: var(--ink3); padding: 0 4px; }
+.pgn__btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-bg); }
+.pgn__btn.cur { background: var(--teal-dk); border-color: var(--teal-dk); color: var(--white); }
+.pgn__btn:disabled { opacity: .3; pointer-events: none; }
+.pgn__dots { color: var(--ink3); padding: 0 4px; font-size: 14px; }
 
-/* ══ VIEW TOGGLE ══ */
-.view-toggle {
-  display: flex;
-  background: var(--bg2);
-  border-radius: var(--radius-sm);
-  padding: 3px;
-  border: 1px solid var(--border);
-}
-.view-btn {
-  padding: 6px 12px;
-  border: none;
-  background: transparent;
-  border-radius: 6px;
-  font-size: 15px;
-  cursor: pointer;
-  color: var(--ink3);
-  transition: all .2s;
-}
-.view-btn.active { background: var(--white); color: var(--ink); box-shadow: var(--shadow-sm); }
-
-/* ══ LOADING SPINNER ══ */
-.spinner-wrap {
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: center;
-  padding: 60px;
-}
-.spinner {
-  width: 40px; height: 40px;
-  border: 3px solid var(--border);
-  border-top-color: var(--teal);
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ══ MAP TOGGLE BTN ══ */
-.map-toggle-btn {
+/* ── MAP FAB ── */
+.map-fab {
   position: fixed;
-  bottom: 28px;
-  left: 50%;
+  bottom: 28px; left: 50%;
   transform: translateX(-50%);
-  z-index: 500;
+  z-index: 400;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   background: var(--ink);
   color: var(--white);
-  padding: 12px 24px;
+  text-decoration: none;
+  padding: 13px 26px;
   border-radius: 100px;
+  font-family: 'DM Sans', sans-serif;
   font-size: 14px;
-  font-weight: 600;
-  box-shadow: 0 8px 32px rgba(0,0,0,.25);
-  border: none;
-  cursor: pointer;
-  transition: transform .2s, background .2s;
+  font-weight: 700;
+  letter-spacing: .02em;
+  box-shadow: 0 8px 28px rgba(0,0,0,.28);
+  transition: transform .25s, background .25s, box-shadow .25s;
 }
-.map-toggle-btn:hover { background: var(--teal-dk); transform: translateX(-50%) translateY(-2px); }
+.map-fab:hover {
+  background: var(--teal-dk);
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow: 0 14px 36px rgba(0,0,0,.25);
+  color: var(--white);
+}
 
-/* ══ RESPONSIVE ══ */
-@media (max-width: 900px) {
-  .places-layout { grid-template-columns: 1fr; }
-  .sidebar { position: static; display: none; }
-  .sidebar.mobile-open { display: flex; }
+/* ── MOBILE SIDEBAR DRAWER ── */
+.sidebar-backdrop {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(14,71,64,.4);
+  backdrop-filter: blur(3px);
+  z-index: 700;
 }
-@media (max-width: 600px) {
-  .places-grid { grid-template-columns: 1fr; }
-  .places-grid--list .place-card { flex-direction: column; height: auto; }
-  .places-grid--list .place-card__img { width: 100%; height: 180px; }
+.sidebar-backdrop.open { display: block; }
+
+@media (max-width: 960px) {
+  .pl-layout { grid-template-columns: 1fr; }
+  .pl-sidebar {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: min(340px, 90vw);
+    background: var(--bg);
+    z-index: 750;
+    padding: 20px;
+    overflow-y: auto;
+    transform: translateX(110%);
+    transition: transform .35s cubic-bezier(.4,0,.2,1);
+    border-left: 1px solid var(--border);
+    box-shadow: -12px 0 40px rgba(0,0,0,.12);
+  }
+  .pl-sidebar.open { transform: none; }
+  .ctrl-filter-btn { display: flex; }
+  .ph__stats { display: none; }
+}
+@media (max-width: 640px) {
+  .ph { padding: 44px 5% 40px; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .is-list .pcard { flex-direction: column; height: auto; }
+  .is-list .pcard__img { width: 100%; height: 180px; }
+  .ctrl-select { display: none; }
+  .controls-bar__inner { padding: 10px 5%; }
+  .cat-tabs__scroll { padding: 0 5%; }
+  .pl-page { padding: 24px 5% 100px; }
 }
 </style>
 {% endblock %}
 
+
 {% block content %}
 
-<!-- ═══ PAGE HERO ═══ -->
-<div class="page-hero">
-  <div class="page-hero__inner">
-    <div class="page-hero__breadcrumb">
-      <a href="/">Bosh sahifa</a>
-      <span>›</span>
-      <span>Joylar</span>
+<!-- ══════════════ HERO ══════════════ -->
+<section class="ph">
+  <div class="ph__pattern"></div>
+  <div class="ph__inner">
+    <div class="ph__left">
+      <nav class="ph__bread">
+        <a href="/">Bosh sahifa</a>
+        <span class="sep">›</span>
+        <span>Joylar</span>
+      </nav>
+      <div class="ph__eyebrow">Kokand Guidance</div>
+      <h1>Barcha <em>Joylar</em></h1>
+      <p class="ph__sub">Qo'qon xonligining tarixiy obidalari, masjidlari, muzeylar va zamonaviy maskanlari</p>
     </div>
-    <h1>Barcha Joylar</h1>
-    <p>Kokandning <strong id="totalCount" style="color:var(--gold-lt)">...</strong> ta diqqatga sazovor joyi</p>
+    <div class="ph__stats">
+      <div class="ph__stat">
+        <span class="ph__stat-num" id="statTotal">—</span>
+        <span class="ph__stat-lbl">Joy</span>
+      </div>
+      <div class="ph__stat-divider"></div>
+      <div class="ph__stat">
+        <span class="ph__stat-num" id="statCats">—</span>
+        <span class="ph__stat-lbl">Kategoriya</span>
+      </div>
+      <div class="ph__stat-divider"></div>
+      <div class="ph__stat">
+        <span class="ph__stat-num">4.8</span>
+        <span class="ph__stat-lbl">O'rtacha reyting</span>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
-<!-- ═══ TOOLBAR ═══ -->
-<div class="toolbar">
-  <div class="toolbar__inner">
-    <div class="toolbar__search">
-      <span class="toolbar__search-icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="Joy nomi, manzil, teg..." autocomplete="off"/>
-      <button class="toolbar__search-clear" id="searchClear" onclick="clearSearch()" aria-label="Tozalash">✕</button>
+<!-- ══════════════ SEARCH & CONTROLS ══════════════ -->
+<div class="controls-bar">
+  <div class="controls-bar__inner">
+
+    <div class="search-box">
+      <span class="search-box__icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Joy nomi yoki manzil..." autocomplete="off"/>
+      <button class="search-box__clear" id="searchClear" onclick="clearSearch()">✕</button>
     </div>
 
-    <select class="toolbar__select" id="orderingSelect" onchange="applyFilters()">
+    <select class="ctrl-select" id="orderSel" onchange="onOrderChange()">
       <option value="-is_featured,-created_at">Tavsiya etilgan</option>
-      <option value="-average_rating">Reyting bo'yicha</option>
+      <option value="-average_rating">Reyting ↓</option>
       <option value="-view_count">Ommabop</option>
-      <option value="title">Nom bo'yicha</option>
-      <option value="created_at">Yangi</option>
+      <option value="title">Nom A→Z</option>
+      <option value="-created_at">Yangi</option>
     </select>
 
-    <div class="view-toggle">
-      <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')" title="Kartochka ko'rinish">⊞</button>
-      <button class="view-btn" id="listViewBtn" onclick="setView('list')" title="Ro'yxat ko'rinish">☰</button>
+    <button class="ctrl-filter-btn" id="filterBtn" onclick="toggleDrawer()">
+      <span>⚙ Filtr</span>
+      <span class="ctrl-filter-btn__dot" id="filterDot"></span>
+    </button>
+
+    <div class="view-btns">
+      <button class="view-btn on" id="btnGrid" onclick="setView('grid')" title="Kartochka">⊞</button>
+      <button class="view-btn"   id="btnList" onclick="setView('list')" title="Ro'yxat">☰</button>
     </div>
 
-    <span class="toolbar__count">
-      <strong id="resultCount">0</strong> ta natija
-    </span>
   </div>
 </div>
 
-<!-- ═══ CATEGORY CHIPS ═══ -->
-<div class="filter-chips" id="categoryChips">
-  <button class="chip active" data-cat="" onclick="selectCategory(this, '')">
-    Hammasi
-  </button>
-  <!-- JS tomonidan to'ldiriladi -->
+<!-- ══════════════ CATEGORY TABS ══════════════ -->
+<div class="cat-tabs">
+  <div class="cat-tabs__scroll" id="catTabs">
+    <button class="cat-tab on" data-slug="" onclick="pickCat(this,'')">Hammasi</button>
+  </div>
 </div>
 
-<!-- ═══ MAIN LAYOUT ═══ -->
-<div class="places-page">
-  <div class="places-layout">
+<!-- ══════════════ PAGE BODY ══════════════ -->
+<div class="pl-page">
+  <div class="pl-layout">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
+    <!-- ─── SIDEBAR ─── -->
+    <aside class="pl-sidebar" id="sidebar">
 
-      <!-- Price filter -->
-      <div class="filter-card">
-        <div class="filter-card__title">
-          Narx darajasi
-          <button class="filter-card__clear" onclick="clearFilter('price')">Tozalash</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+        <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700">Filtrlar</span>
+        <button onclick="toggleDrawer()"
+                style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+      </div>
+
+      <!-- Price -->
+      <div class="fcard">
+        <div class="fcard__head">
+          <span class="fcard__title">Narx darajasi</span>
+          <button class="fcard__reset" onclick="resetFilter('price')">Tozalash</button>
         </div>
-        <div class="price-grid">
-          <div class="price-option" data-price="0" onclick="togglePrice(this, 0)">
-            <span class="price-sym">🆓</span>
-            <span class="price-lbl">Bepul</span>
-          </div>
-          <div class="price-option" data-price="1" onclick="togglePrice(this, 1)">
-            <span class="price-sym">₩</span>
-            <span class="price-lbl">Arzon</span>
-          </div>
-          <div class="price-option" data-price="2" onclick="togglePrice(this, 2)">
-            <span class="price-sym">₩₩</span>
-            <span class="price-lbl">O'rta</span>
-          </div>
-          <div class="price-option" data-price="3" onclick="togglePrice(this, 3)">
-            <span class="price-sym">₩₩₩</span>
-            <span class="price-lbl">Qimmat</span>
+        <div class="fcard__body">
+          <div class="price-btns">
+            <div class="price-btn" data-p="0" onclick="togglePrice(this,0)">
+              <span class="price-btn__sym">🆓</span>
+              <span class="price-btn__lbl">Bepul</span>
+            </div>
+            <div class="price-btn" data-p="1" onclick="togglePrice(this,1)">
+              <span class="price-btn__sym">₩</span>
+              <span class="price-btn__lbl">Arzon</span>
+            </div>
+            <div class="price-btn" data-p="2" onclick="togglePrice(this,2)">
+              <span class="price-btn__sym">₩₩</span>
+              <span class="price-btn__lbl">O'rta</span>
+            </div>
+            <div class="price-btn" data-p="3" onclick="togglePrice(this,3)">
+              <span class="price-btn__sym">₩₩₩</span>
+              <span class="price-btn__lbl">Qimmat</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Rating filter -->
-      <div class="filter-card">
-        <div class="filter-card__title">
-          Minimal reyting
-          <button class="filter-card__clear" onclick="clearFilter('rating')">Tozalash</button>
+      <!-- Rating -->
+      <div class="fcard">
+        <div class="fcard__head">
+          <span class="fcard__title">Minimal reyting</span>
+          <button class="fcard__reset" onclick="resetFilter('rating')">Tozalash</button>
         </div>
-        <div id="ratingBars">
-          <!-- JS to'ldiradi -->
-        </div>
+        <div class="fcard__body" id="ratingRows"></div>
       </div>
 
       <!-- Featured -->
-      <div class="filter-card">
-        <div class="filter-card__title">Qo'shimcha</div>
-        <label class="filter-option">
-          <input type="checkbox" id="featuredOnly" onchange="applyFilters()"/>
-          <span class="label-text">Faqat mashhurlar</span>
-        </label>
+      <div class="fcard">
+        <div class="fcard__body" style="padding:8px 10px">
+          <div class="feat-row" onclick="toggleFeatured()">
+            <span class="feat-row__label">⭐ Faqat mashhurlar</span>
+            <div class="pill-toggle" id="featPill">
+              <div class="pill-toggle__thumb"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
+      <button onclick="toggleDrawer()"
+              style="width:100%;margin-top:8px;padding:14px;background:var(--teal-dk);color:#fff;border:none;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.02em">
+        Qo'llash
+      </button>
     </aside>
 
-    <!-- GRID -->
+    <!-- ─── MAIN ─── -->
     <div>
-      <div class="places-grid" id="placesGrid">
-        <!-- Skeleton -->
-        <div class="skeleton skeleton--card"></div>
-        <div class="skeleton skeleton--card"></div>
-        <div class="skeleton skeleton--card"></div>
-        <div class="skeleton skeleton--card"></div>
-        <div class="skeleton skeleton--card"></div>
-        <div class="skeleton skeleton--card"></div>
+      <div class="applied-strip" id="appliedStrip"></div>
+      <div class="results-meta">
+        <p class="results-meta__count" id="resultsMeta">Yuklanmoqda...</p>
       </div>
-
-      <!-- Pagination -->
-      <div class="pagination" id="pagination"></div>
+      <div class="cards-grid" id="cardsGrid">
+        <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line s"></div><div class="skel-line f"></div><div class="skel-line m"></div></div></div>
+        <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line s"></div><div class="skel-line f"></div><div class="skel-line m"></div></div></div>
+        <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line s"></div><div class="skel-line f"></div><div class="skel-line m"></div></div></div>
+        <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line s"></div><div class="skel-line f"></div><div class="skel-line m"></div></div></div>
+        <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line s"></div><div class="skel-line f"></div><div class="skel-line m"></div></div></div>
+        <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line s"></div><div class="skel-line f"></div><div class="skel-line m"></div></div></div>
+      </div>
+      <div class="pgn" id="pgn"></div>
     </div>
 
   </div>
 </div>
 
-<!-- Fixed map toggle -->
-<button class="map-toggle-btn" onclick="window.location='/map/'">
-  🗺 Xaritada ko'rish
-</button>
+<div class="sidebar-backdrop" id="backdrop" onclick="toggleDrawer()"></div>
+
+<a href="/map/" class="map-fab">🗺 Xaritada ko'rish</a>
 
 {% endblock %}
 
+
 {% block extra_js %}
 <script>
-/* ═══════════════════════════════════════════════════════════
-   PLACES LIST PAGE — JavaScript
-═══════════════════════════════════════════════════════════ */
+const API = '/api/v1';
+const PER_PAGE = 12;
 
-const API_BASE   = '/api/v1';
-const PAGE_SIZE  = 12;
-
-let state = {
-  search:    '',
-  category:  '',
-  ordering:  '-is_featured,-created_at',
-  priceLevel: null,
-  minRating: null,
-  featured:  false,
-  page:      1,
-  totalPages: 1,
-  view:      localStorage.getItem('places_view') || 'grid',
+let S = {
+  q:'', cat:'', order:'-is_featured,-created_at',
+  price:null, rating:null, featured:false,
+  page:1, pages:1, total:0,
+  view: localStorage.getItem('kg_view')||'grid',
 };
 
-/* ── INIT ── */
-async function init() {
-  await loadCategories();
-  buildRatingBars();
-  restoreUrlParams();
-  setView(state.view, false);
-  await loadPlaces();
+async function boot() {
+  fromUrl();
+  applyView(S.view, false);
+  buildRatingRows();
+  await fetchCategories();
+  await fetchPlaces();
 
-  // Search debounce
-  let debounce;
-  document.getElementById('searchInput').addEventListener('input', (e) => {
-    state.search = e.target.value.trim();
-    document.getElementById('searchClear').classList.toggle('visible', !!state.search);
-    clearTimeout(debounce);
-    debounce = setTimeout(() => { state.page = 1; loadPlaces(); }, 380);
+  let timer;
+  document.getElementById('searchInput').addEventListener('input', e => {
+    S.q = e.target.value.trim();
+    document.getElementById('searchClear').classList.toggle('show', !!S.q);
+    clearTimeout(timer);
+    timer = setTimeout(() => { S.page=1; fetchPlaces(); }, 350);
   });
-}
-
-/* ── LOAD CATEGORIES ── */
-async function loadCategories() {
-  try {
-    const res  = await fetch(`${API_BASE}/categories/`);
-    const data = await res.json();
-    const chips = document.getElementById('categoryChips');
-
-    data.results?.forEach(cat => {
-      const btn = document.createElement('button');
-      btn.className = 'chip';
-      btn.dataset.cat = cat.slug;
-      btn.onclick = () => selectCategory(btn, cat.slug);
-      btn.innerHTML = `${cat.title} <span class="chip__count">${cat.place_count}</span>`;
-      chips.appendChild(btn);
-    });
-  } catch { /* silently fail */ }
-}
-
-/* ── LOAD PLACES ── */
-async function loadPlaces() {
-  const grid = document.getElementById('placesGrid');
-  grid.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div></div>`;
-
-  const params = new URLSearchParams({
-    page:     state.page,
-    page_size: PAGE_SIZE,
-    ordering: state.ordering,
-  });
-  if (state.search)    params.set('search', state.search);
-  if (state.category)  params.set('category__slug', state.category);
-  if (state.priceLevel !== null) params.set('price_level', state.priceLevel);
-  if (state.featured)  params.set('is_featured', 'true');
-
-  try {
-    const res  = await fetch(`${API_BASE}/places/?${params}`);
-    const data = await res.json();
-
-    const count = data.count ?? 0;
-    document.getElementById('totalCount').textContent = count;
-    document.getElementById('resultCount').textContent = count;
-
-    state.totalPages = Math.ceil(count / PAGE_SIZE);
-    renderPlaces(data.results ?? []);
-    renderPagination();
-    updateUrl();
-  } catch {
-    grid.innerHTML = `<div class="empty-state"><div class="empty-state__icon">⚠️</div><h3>Xatolik yuz berdi</h3><p>Iltimos, qayta urinib ko'ring.</p></div>`;
+  if (S.q) {
+    document.getElementById('searchInput').value = S.q;
+    document.getElementById('searchClear').classList.add('show');
   }
 }
 
-/* ── RENDER PLACES ── */
-function renderPlaces(places) {
-  const grid = document.getElementById('placesGrid');
-  grid.className = `places-grid${state.view === 'list' ? ' places-grid--list' : ''}`;
+async function fetchCategories() {
+  try {
+    const r = await apiFetch(`${API}/categories/?page_size=50`);
+    const d = await r.json();
+    const list = d.results || d || [];
+    document.getElementById('statCats').textContent = list.length;
+    const tabs = document.getElementById('catTabs');
+    list.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'cat-tab'+(S.cat===c.slug?' on':'');
+      btn.dataset.slug = c.slug;
+      btn.onclick = () => pickCat(btn, c.slug);
+      btn.innerHTML = `${c.icon||''} ${c.title}${c.place_count!=null?`<span class="cat-tab__count">${c.place_count}</span>`:''}`;
+      tabs.appendChild(btn);
+    });
+    tabs.querySelector('[data-slug=""]')?.classList.toggle('on', !S.cat);
+  } catch(e) { console.warn(e); }
+}
 
-  if (!places.length) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state__icon">🔍</div>
-        <h3>Joy topilmadi</h3>
-        <p>Filtrlarni o'zgartiring yoki boshqa kalit so'z kiriting.</p>
-        <button class="btn btn--secondary" onclick="resetFilters()">Filtrlarni tozalash</button>
-      </div>`;
+async function fetchPlaces() {
+  const grid = document.getElementById('cardsGrid');
+  grid.innerHTML = Array(6).fill(0).map(() =>
+    `<div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line s"></div><div class="skel-line f"></div><div class="skel-line m"></div></div></div>`
+  ).join('');
+  document.getElementById('resultsMeta').textContent = 'Yuklanmoqda...';
+
+  const p = new URLSearchParams({page:S.page, page_size:PER_PAGE, ordering:S.order});
+  if (S.q)           p.set('search', S.q);
+  if (S.cat)         p.set('category__slug', S.cat);
+  if (S.price!=null) p.set('price_level', S.price);
+  if (S.rating!=null)p.set('min_rating', S.rating);
+  if (S.featured)    p.set('is_featured','true');
+
+  try {
+    const r = await apiFetch(`${API}/places/?${p}`);
+    if (!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    const count = d.count ?? (Array.isArray(d)?d.length:0);
+    S.total=count; S.pages=Math.max(1,Math.ceil(count/PER_PAGE));
+    document.getElementById('statTotal').textContent = count.toLocaleString();
+    document.getElementById('resultsMeta').innerHTML = `<strong>${count.toLocaleString()}</strong> ta joy topildi`;
+    renderCards(d.results??d);
+    renderPagination();
+    renderApplied();
+    pushUrl();
+  } catch(err) {
+    grid.innerHTML = `<div class="empty-box"><div class="empty-box__icon">⚠️</div><h3>Xatolik yuz berdi</h3><p>Serverga ulanishda muammo bo'ldi.</p><button class="btn btn--secondary" onclick="fetchPlaces()">🔄 Qayta</button></div>`;
+  }
+}
+
+function renderCards(places) {
+  const grid = document.getElementById('cardsGrid');
+  grid.className = 'cards-grid'+(S.view==='list'?' is-list':'');
+  if (!places?.length) {
+    grid.innerHTML = `<div class="empty-box"><div class="empty-box__icon">🔍</div><h3>Joy topilmadi</h3><p>Filtrlarni o'zgartiring yoki boshqa so'z kiriting.</p><button class="btn btn--secondary" onclick="hardReset()">Tozalash</button></div>`;
     return;
   }
+  grid.innerHTML = places.map(p => cardHtml(p)).join('');
+  grid.querySelectorAll('.pcard').forEach((c,i) => {
+    c.style.cssText = 'opacity:0;transform:translateY(16px)';
+    setTimeout(() => { c.style.cssText = 'transition:opacity .4s ease,transform .4s ease;opacity:1;transform:none'; }, i*45);
+  });
+}
 
-  grid.innerHTML = places.map(p => {
-    const stars    = '★'.repeat(Math.round(p.average_rating)) + '☆'.repeat(5 - Math.round(p.average_rating));
-    const imgHtml  = p.main_image
-      ? `<img src="${p.main_image}" alt="${p.title}" loading="lazy"/>`
-      : `<div class="place-card__no-img">🏛</div>`;
-    const tags     = (p.tags || []).slice(0, 3).map(t => `<span class="tag">${t.name}</span>`).join('');
-    const price    = p.price_level === 0 ? 'Bepul' : p.price_level_display;
-    const favIcon  = p.is_favorited ? '♥' : '♡';
-    const favClass = p.is_favorited ? 'is-active' : '';
-
-    return `
-    <a href="/places/${p.slug}/" class="place-card reveal">
-      <div class="place-card__img">
-        ${imgHtml}
-        ${p.is_featured ? '<span class="place-card__badge">Mashhur</span>' : ''}
-        <button class="place-card__fav js-fav-btn ${favClass}"
-                data-place-id="${p.id}"
-                aria-label="Sevimlilarga qo'shish"
-                onclick="event.preventDefault()">
-          ${favIcon}
-        </button>
-      </div>
-      <div class="place-card__body">
-        <div class="place-card__cat">${p.category?.title || ''}</div>
-        <h3 class="place-card__title">${p.title}</h3>
-        <p class="place-card__desc">${(p.short_description || '').slice(0, 90)}${p.short_description?.length > 90 ? '...' : ''}</p>
-        ${tags ? `<div class="place-card__tags">${tags}</div>` : ''}
-        <div class="place-card__meta">
-          <div class="place-card__rating">
-            <span class="stars">${stars}</span>
-            ${Number(p.average_rating).toFixed(1)}
-            <small>(${p.review_count})</small>
-          </div>
-          <span class="place-card__price">${price}</span>
+function cardHtml(p) {
+  const r = Number(p.average_rating||0);
+  const s = '★'.repeat(Math.round(r))+'☆'.repeat(5-Math.round(r));
+  const img = p.main_image
+    ? `<img src="${esc(p.main_image)}" alt="${esc(p.title)}" loading="lazy"/>`
+    : `<div class="pcard__img-placeholder">🏛</div>`;
+  const tags = (p.tags||[]).slice(0,3).map(t=>`<span class="ptag">${esc(t.name||t)}</span>`).join('');
+  const price = p.price_level===0?'Bepul':(p.price_level_display||'');
+  return `<a href="/places/${p.slug}/" class="pcard">
+    <div class="pcard__img">${img}
+      ${p.is_featured?'<span class="pcard__featured">⭐ Mashhur</span>':''}
+      <button class="pcard__fav js-fav-btn ${p.is_favorited?'loved':''}"
+        data-place-id="${p.id}" onclick="event.preventDefault();event.stopPropagation()">
+        ${p.is_favorited?'♥':'♡'}
+      </button>
+    </div>
+    <div class="pcard__body">
+      ${p.category?.title?`<div class="pcard__cat">${esc(p.category.title)}</div>`:''}
+      <h3 class="pcard__title">${esc(p.title)}</h3>
+      <p class="pcard__desc">${esc(p.short_description||'')}</p>
+      ${tags?`<div class="pcard__tags">${tags}</div>`:''}
+      <div class="pcard__foot">
+        <div class="pcard__rating">
+          <span class="pcard__stars">${s}</span>
+          ${r.toFixed(1)}<span class="pcard__reviews">(${p.review_count||0})</span>
         </div>
+        ${price?`<span class="pcard__price">${esc(price)}</span>`:''}
       </div>
-    </a>`;
-  }).join('');
-
-  // Trigger scroll reveal for new cards
-  document.querySelectorAll('.place-card.reveal').forEach(el => {
-    setTimeout(() => el.classList.add('visible'), 50);
-  });
+    </div>
+  </a>`;
 }
 
-/* ── RENDER PAGINATION ── */
 function renderPagination() {
-  const pag = document.getElementById('pagination');
-  if (state.totalPages <= 1) { pag.innerHTML = ''; return; }
-
-  let html = '';
-  html += `<button class="page-btn" onclick="goPage(${state.page - 1})" ${state.page === 1 ? 'disabled' : ''}>‹</button>`;
-
-  const range = pageRange(state.page, state.totalPages);
-  range.forEach(p => {
-    if (p === '...') {
-      html += `<span class="page-dots">…</span>`;
-    } else {
-      html += `<button class="page-btn ${p === state.page ? 'active' : ''}" onclick="goPage(${p})">${p}</button>`;
-    }
-  });
-
-  html += `<button class="page-btn" onclick="goPage(${state.page + 1})" ${state.page === state.totalPages ? 'disabled' : ''}>›</button>`;
-  pag.innerHTML = html;
+  const el = document.getElementById('pgn');
+  if (S.pages<=1){el.innerHTML='';return;}
+  const range = S.pages<=7
+    ? Array.from({length:S.pages},(_,i)=>i+1)
+    : S.page<=4?[1,2,3,4,5,'…',S.pages]
+    : S.page>=S.pages-3?[1,'…',S.pages-4,S.pages-3,S.pages-2,S.pages-1,S.pages]
+    : [1,'…',S.page-1,S.page,S.page+1,'…',S.pages];
+  let h = `<button class="pgn__btn" onclick="goPage(${S.page-1})" ${S.page===1?'disabled':''}>‹</button>`;
+  range.forEach(n => n==='…'
+    ? h+=`<span class="pgn__dots">…</span>`
+    : h+=`<button class="pgn__btn ${n===S.page?'cur':''}" onclick="goPage(${n})">${n}</button>`);
+  h += `<button class="pgn__btn" onclick="goPage(${S.page+1})" ${S.page===S.pages?'disabled':''}>›</button>`;
+  el.innerHTML = h;
 }
 
-function pageRange(current, total) {
-  if (total <= 7) return Array.from({length: total}, (_, i) => i + 1);
-  if (current <= 4) return [1,2,3,4,5,'...',total];
-  if (current >= total - 3) return [1,'...',total-4,total-3,total-2,total-1,total];
-  return [1,'...',current-1,current,current+1,'...',total];
+function renderApplied() {
+  const el = document.getElementById('appliedStrip');
+  const pl = ['Bepul','Arzon ₩','O\'rta ₩₩','Qimmat ₩₩₩','Hashamat'];
+  const tags = [];
+  if (S.q)           tags.push({l:`"${S.q}"`,k:'q'});
+  if (S.price!=null) tags.push({l:pl[S.price],k:'price'});
+  if (S.rating!=null)tags.push({l:'★'.repeat(S.rating)+' '+S.rating+'+',k:'rating'});
+  if (S.featured)    tags.push({l:'⭐ Mashhurlar',k:'featured'});
+  el.innerHTML = tags.map(t=>`<button class="applied-tag" onclick="resetFilter('${t.k}')">${esc(t.l)} <span class="applied-tag__x">✕</span></button>`).join('')
+    +(tags.length>1?`<button class="clear-all" onclick="hardReset()">Barchasini tozalash</button>`:'');
+  const active = S.price!=null||S.rating!=null||S.featured;
+  document.getElementById('filterDot').style.display = active?'block':'none';
+  document.getElementById('filterBtn').classList.toggle('active', active);
 }
 
-/* ── RATING BARS ── */
-function buildRatingBars() {
-  const ratings = [5, 4, 3, 2, 1];
-  const counts  = [45, 30, 15, 7, 3]; // placeholder percentages
-  document.getElementById('ratingBars').innerHTML = ratings.map((r, i) => `
-    <div class="rating-bar" onclick="setMinRating(${r})" style="cursor:pointer" title="${r}+ yulduz">
-      <span class="rating-stars">${'★'.repeat(r)}</span>
-      <div class="rating-bar-fill">
-        <div class="rating-bar-inner" style="width:${counts[i]}%"></div>
-      </div>
-      <span class="rating-num">${r}+</span>
+function buildRatingRows() {
+  const w=[75,55,30,14,6];
+  document.getElementById('ratingRows').innerHTML=[5,4,3,2,1].map((r,i)=>`
+    <div class="rating-row ${S.rating===r?'on':''}" onclick="setRating(${r})">
+      <span class="rating-row__stars">${'★'.repeat(r)}</span>
+      <div class="rating-row__bar"><div class="rating-row__fill" style="width:${w[i]}%"></div></div>
+      <span class="rating-row__num">${r}+</span>
     </div>`).join('');
 }
 
-/* ── ACTIONS ── */
-function selectCategory(btn, slug) {
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  state.category = slug;
-  state.page = 1;
-  loadPlaces();
+function pickCat(btn,slug){
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on'); S.cat=slug; S.page=1; fetchPlaces();
 }
-
-function togglePrice(el, level) {
-  if (el.classList.contains('active')) {
-    el.classList.remove('active');
-    state.priceLevel = null;
-  } else {
-    document.querySelectorAll('.price-option').forEach(p => p.classList.remove('active'));
-    el.classList.add('active');
-    state.priceLevel = level;
-  }
-  state.page = 1;
-  loadPlaces();
+function togglePrice(el,val){
+  const on=el.classList.contains('on');
+  document.querySelectorAll('.price-btn').forEach(b=>b.classList.remove('on'));
+  if(!on){el.classList.add('on');S.price=val;}else S.price=null;
+  S.page=1; fetchPlaces();
 }
-
-function setMinRating(r) {
-  state.minRating = r;
-  state.page = 1;
-  loadPlaces();
+function setRating(r){S.rating=S.rating===r?null:r;S.page=1;buildRatingRows();fetchPlaces();}
+function toggleFeatured(){S.featured=!S.featured;document.getElementById('featPill').classList.toggle('on',S.featured);S.page=1;fetchPlaces();}
+function onOrderChange(){S.order=document.getElementById('orderSel').value;S.page=1;fetchPlaces();}
+function clearSearch(){document.getElementById('searchInput').value='';document.getElementById('searchClear').classList.remove('show');S.q='';S.page=1;fetchPlaces();}
+function resetFilter(k){
+  if(k==='q'){clearSearch();return;}
+  if(k==='price'){document.querySelectorAll('.price-btn').forEach(b=>b.classList.remove('on'));S.price=null;}
+  if(k==='rating'){S.rating=null;buildRatingRows();}
+  if(k==='featured'){S.featured=false;document.getElementById('featPill').classList.remove('on');}
+  S.page=1;fetchPlaces();
 }
-
-function applyFilters() {
-  state.ordering = document.getElementById('orderingSelect').value;
-  state.featured = document.getElementById('featuredOnly').checked;
-  state.page = 1;
-  loadPlaces();
+function hardReset(){
+  S.q='';S.cat='';S.price=null;S.rating=null;S.featured=false;S.page=1;
+  S.order='-is_featured,-created_at';
+  document.getElementById('searchInput').value='';
+  document.getElementById('searchClear').classList.remove('show');
+  document.getElementById('orderSel').value=S.order;
+  document.querySelectorAll('.price-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.cat-tab').forEach((t,i)=>t.classList.toggle('on',i===0));
+  document.getElementById('featPill').classList.remove('on');
+  buildRatingRows(); fetchPlaces();
 }
-
-function clearSearch() {
-  document.getElementById('searchInput').value = '';
-  document.getElementById('searchClear').classList.remove('visible');
-  state.search = '';
-  state.page = 1;
-  loadPlaces();
+function goPage(n){if(n<1||n>S.pages)return;S.page=n;window.scrollTo({top:0,behavior:'smooth'});fetchPlaces();}
+function applyView(v,save=true){
+  S.view=v;if(save)localStorage.setItem('kg_view',v);
+  document.getElementById('btnGrid').classList.toggle('on',v==='grid');
+  document.getElementById('btnList').classList.toggle('on',v==='list');
+  const g=document.getElementById('cardsGrid');
+  if(g)g.className='cards-grid'+(v==='list'?' is-list':'');
 }
-
-function clearFilter(type) {
-  if (type === 'price') {
-    document.querySelectorAll('.price-option').forEach(p => p.classList.remove('active'));
-    state.priceLevel = null;
-  }
-  if (type === 'rating') { state.minRating = null; }
-  state.page = 1;
-  loadPlaces();
+function setView(v){applyView(v,true);}
+function toggleDrawer(){
+  const s=document.getElementById('sidebar');
+  const b=document.getElementById('backdrop');
+  const open=s.classList.toggle('open');
+  b.classList.toggle('open',open);
+  document.body.style.overflow=open?'hidden':'';
 }
-
-function resetFilters() {
-  state = { ...state, search:'', category:'', priceLevel:null, minRating:null, featured:false, page:1 };
-  document.getElementById('searchInput').value = '';
-  document.getElementById('featuredOnly').checked = false;
-  document.querySelectorAll('.price-option').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.chip').forEach((c, i) => c.classList.toggle('active', i === 0));
-  loadPlaces();
+function pushUrl(){
+  const p=new URLSearchParams();
+  if(S.q)p.set('q',S.q);if(S.cat)p.set('cat',S.cat);
+  if(S.page>1)p.set('page',S.page);if(S.price!=null)p.set('price',S.price);
+  if(S.rating!=null)p.set('rating',S.rating);if(S.featured)p.set('featured','1');
+  history.replaceState({},'',location.pathname+(p.toString()?'?'+p:''));
 }
-
-function goPage(p) {
-  if (p < 1 || p > state.totalPages) return;
-  state.page = p;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  loadPlaces();
+function fromUrl(){
+  const p=new URLSearchParams(location.search);
+  if(p.get('q'))S.q=p.get('q');
+  if(p.get('cat'))S.cat=p.get('cat');
+  if(p.get('page'))S.page=+p.get('page')||1;
+  if(p.get('price'))S.price=+p.get('price');
+  if(p.get('rating'))S.rating=+p.get('rating');
+  if(p.get('featured')==='1'){S.featured=true;document.getElementById('featPill').classList.add('on');}
 }
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-function setView(v, save = true) {
-  state.view = v;
-  if (save) localStorage.setItem('places_view', v);
-  document.getElementById('gridViewBtn').classList.toggle('active', v === 'grid');
-  document.getElementById('listViewBtn').classList.toggle('active', v === 'list');
-  document.getElementById('placesGrid').className = `places-grid${v === 'list' ? ' places-grid--list' : ''}`;
-}
-
-/* ── URL SYNC ── */
-function updateUrl() {
-  const p = new URLSearchParams();
-  if (state.search)   p.set('q', state.search);
-  if (state.category) p.set('cat', state.category);
-  if (state.page > 1) p.set('page', state.page);
-  history.replaceState({}, '', `${window.location.pathname}${p.toString() ? '?' + p : ''}`);
-}
-
-function restoreUrlParams() {
-  const p = new URLSearchParams(window.location.search);
-  if (p.get('q'))    { state.search = p.get('q'); document.getElementById('searchInput').value = state.search; }
-  if (p.get('cat'))  { state.category = p.get('cat'); }
-  if (p.get('page')) { state.page = parseInt(p.get('page')) || 1; }
-}
-
-init();
+boot();
 </script>
 {% endblock %}

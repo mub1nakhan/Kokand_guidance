@@ -1,3 +1,7 @@
 from django.contrib import admin
+from routes.models import TourRoute, TransportMode, RoutePlace, DifficultyLevel
 
-# Register your models here.
+
+admin.site.register(TourRoute)
+admin.site.register(RoutePlace)
+

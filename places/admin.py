@@ -1,3 +1,6 @@
 from django.contrib import admin
+from places.models import Place, PlaceImage, PlaceTag
 
-# Register your models here.
+admin.site.register(Place)
+admin.site.register(PlaceImage)
+admin.site.register(PlaceTag)
