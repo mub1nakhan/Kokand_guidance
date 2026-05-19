@@ -1,0 +1,1060 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Joy tafsiloti — Kokand{% endblock %}
+{% block body_class %}page--place-detail{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══ BREADCRUMB ══ */
+.breadcrumb {
+  padding: 16px 5%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink3);
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+.breadcrumb a { color: var(--ink3); transition: color .2s; }
+.breadcrumb a:hover { color: var(--teal); }
+.breadcrumb__sep { color: var(--border); }
+.breadcrumb__current { color: var(--ink2); font-weight: 500; }
+
+/* ══ GALLERY ══ */
+.gallery {
+  position: relative;
+  height: 520px;
+  background: var(--bg2);
+  overflow: hidden;
+}
+.gallery__main {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: opacity .4s;
+}
+.gallery__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10,18,14,.55) 0%, transparent 50%);
+}
+.gallery__thumbs {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+.gallery__thumb {
+  width: 56px; height: 40px;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color .2s, transform .2s;
+  flex-shrink: 0;
+}
+.gallery__thumb.active { border-color: var(--gold); }
+.gallery__thumb:hover { transform: translateY(-2px); }
+.gallery__thumb img { width:100%; height:100%; object-fit:cover; }
+.gallery__badge {
+  position: absolute;
+  top: 24px; left: 5%;
+  z-index: 2;
+  background: var(--gold);
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 100px;
+}
+.gallery__actions {
+  position: absolute;
+  top: 20px; right: 5%;
+  z-index: 2;
+  display: flex;
+  gap: 10px;
+}
+.gallery__btn {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.92);
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(8px);
+  transition: transform .2s, background .2s;
+}
+.gallery__btn:hover { background: var(--white); transform: scale(1.08); }
+.gallery__btn.is-active { color: #e74c3c; }
+
+/* ══ LAYOUT ══ */
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 36px;
+  padding: 40px 5% 80px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ══ MAIN CONTENT ══ */
+.detail-main {}
+
+.place-header { margin-bottom: 28px; }
+.place-header__cat {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--teal);
+  margin-bottom: 10px;
+}
+.place-header__title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+.place-header__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 14px;
+  color: var(--ink3);
+}
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.meta-item strong { color: var(--ink); font-weight: 600; }
+.rating-stars-lg {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.stars-lg { color: var(--gold); font-size: 18px; letter-spacing: 2px; }
+
+/* Tags */
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.tag {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink2);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 4px 12px;
+  border-radius: 100px;
+  transition: all .2s;
+  cursor: pointer;
+  text-decoration: none;
+}
+.tag:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-bg); }
+
+/* Description */
+.section-label {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.place-description {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink2);
+  margin-bottom: 36px;
+}
+.place-description.collapsed {
+  max-height: 120px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent);
+  mask-image: linear-gradient(to bottom, black 60%, transparent);
+}
+.read-more-btn {
+  background: none;
+  border: none;
+  color: var(--teal);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-top: -20px;
+  margin-bottom: 32px;
+  display: block;
+}
+
+/* Working hours */
+.hours-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.hour-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+.hour-row.today { background: var(--teal-bg); border: 1px solid var(--teal-lt); }
+.hour-day { font-weight: 600; color: var(--ink2); }
+.hour-time { color: var(--ink3); }
+.hour-time.closed { color: #e74c3c; }
+
+/* Map embed */
+.map-embed {
+  height: 280px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 36px;
+  background: var(--bg2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--ink3);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color .2s;
+  text-decoration: none;
+}
+.map-embed:hover { border-color: var(--teal); }
+.map-embed__icon { font-size: 36px; }
+
+/* ══ REVIEWS ══ */
+.reviews-section { margin-bottom: 40px; }
+.reviews-summary {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 20px 24px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+}
+.rating-big {
+  text-align: center;
+  flex-shrink: 0;
+}
+.rating-big__num {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.rating-big__stars { color: var(--gold); font-size: 20px; margin: 4px 0; }
+.rating-big__count { font-size: 12px; color: var(--ink3); }
+.rating-bars { flex: 1; }
+.rating-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+.rating-bar-row .label { min-width: 16px; text-align: right; color: var(--ink3); }
+.rating-bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--bg2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.rating-bar-fill { height: 100%; background: var(--gold); border-radius: 3px; transition: width .6s ease; }
+.rating-bar-row .pct { min-width: 28px; color: var(--ink3); }
+
+.write-review-btn {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.review-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  margin-bottom: 14px;
+  position: relative;
+}
+.review-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.reviewer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.reviewer__avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--bg2);
+  border: 2px solid var(--gold-lt);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: var(--gold-dk);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.reviewer__name { font-size: 14px; font-weight: 600; color: var(--ink); }
+.reviewer__date { font-size: 12px; color: var(--ink3); margin-top: 1px; }
+.review-stars { color: var(--gold); font-size: 15px; }
+.review-text { font-size: 14px; color: var(--ink2); line-height: 1.65; }
+.review-images {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.review-img {
+  width: 72px; height: 56px;
+  border-radius: 6px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform .2s;
+}
+.review-img:hover { transform: scale(1.05); }
+.review-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.review-action-btn {
+  font-size: 12px;
+  color: var(--ink3);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 4px 12px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.review-action-btn:hover { border-color: var(--teal); color: var(--teal); }
+.review-action-btn.owner { color: #c0392b; }
+.review-action-btn.owner:hover { border-color: #c0392b; background: #fdf0f0; }
+
+.no-reviews {
+  text-align: center;
+  padding: 40px;
+  color: var(--ink3);
+  font-size: 15px;
+}
+.no-reviews__icon { font-size: 36px; margin-bottom: 8px; }
+
+/* Review modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,15,12,.65);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+  animation: fadeIn .2s ease;
+}
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp .25s ease;
+}
+@keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+.modal__title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal__close { background:none; border:none; font-size:22px; cursor:pointer; color:var(--ink3); }
+.star-picker {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+.star-picker input { display: none; }
+.star-picker label {
+  font-size: 32px;
+  color: var(--border);
+  cursor: pointer;
+  transition: color .15s, transform .15s;
+}
+.star-picker label:hover,
+.star-picker label:hover ~ label,
+.star-picker input:checked ~ label { color: var(--gold); }
+.star-picker label:hover { transform: scale(1.15); }
+.form-textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  resize: vertical;
+  min-height: 110px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.form-textarea:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(26,122,110,.1);
+}
+.form-hint { font-size: 12px; color: var(--ink3); margin-top: 6px; margin-bottom: 16px; }
+
+/* ══ SIDEBAR ══ */
+.detail-sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+.info-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+}
+.info-card__title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink3);
+  margin-bottom: 16px;
+}
+.info-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.info-row:last-child { border-bottom: none; padding-bottom: 0; }
+.info-row__icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.info-row__label { font-size: 11px; color: var(--ink3); text-transform: uppercase; letter-spacing: .06em; }
+.info-row__val { color: var(--ink2); margin-top: 2px; line-height: 1.5; }
+.info-row__val a { color: var(--teal); text-decoration: underline; }
+.info-row__val a:hover { color: var(--teal-dk); }
+
+.price-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--teal);
+  background: var(--teal-bg);
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--teal-lt);
+}
+
+.action-btns { display: flex; flex-direction: column; gap: 10px; }
+
+/* Nearby */
+.nearby-list { display: flex; flex-direction: column; gap: 12px; }
+.nearby-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  padding: 10px;
+  border-radius: var(--radius);
+  transition: background .2s;
+}
+.nearby-item:hover { background: var(--bg2); }
+.nearby-img {
+  width: 56px; height: 44px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--bg2);
+}
+.nearby-name { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+.nearby-meta { font-size: 12px; color: var(--ink3); margin-top: 2px; }
+.nearby-stars { color: var(--gold); font-size: 11px; }
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 900px) {
+  .detail-layout { grid-template-columns: 1fr; }
+  .detail-sidebar { order: -1; }
+  .gallery { height: 320px; }
+  .reviews-summary { flex-direction: column; gap: 16px; }
+}
+@media (max-width: 600px) {
+  .gallery { height: 240px; }
+  .gallery__thumbs { display: none; }
+  .detail-layout { padding: 20px 5% 60px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══ BREADCRUMB ═══ -->
+<div class="breadcrumb" id="breadcrumb">
+  <a href="/">Bosh sahifa</a>
+  <span class="breadcrumb__sep">›</span>
+  <a href="/places/">Joylar</a>
+  <span class="breadcrumb__sep">›</span>
+  <span class="breadcrumb__current" id="bcTitle">Yuklanmoqda...</span>
+</div>
+
+<!-- ═══ GALLERY ═══ -->
+<div class="gallery" id="gallery">
+  <img src="" alt="" class="gallery__main" id="galleryMain"/>
+  <div class="gallery__overlay"></div>
+  <div class="gallery__thumbs" id="galleryThumbs"></div>
+  <div class="gallery__actions">
+    <button class="gallery__btn js-fav-btn" id="favBtn" onclick="" aria-label="Sevimli">♡</button>
+    <button class="gallery__btn" onclick="sharePlace()" aria-label="Ulashish">📤</button>
+  </div>
+</div>
+
+<!-- ═══ DETAIL LAYOUT ═══ -->
+<div class="detail-layout">
+
+  <!-- ── MAIN ── -->
+  <main class="detail-main">
+
+    <!-- Header skeleton -->
+    <div id="detailSkeleton">
+      <div class="skeleton" style="height:28px;width:120px;margin-bottom:14px"></div>
+      <div class="skeleton" style="height:44px;width:80%;margin-bottom:12px"></div>
+      <div class="skeleton" style="height:20px;width:60%;margin-bottom:28px"></div>
+      <div class="skeleton" style="height:100px;margin-bottom:20px"></div>
+      <div class="skeleton" style="height:200px"></div>
+    </div>
+
+    <!-- Actual content (hidden until loaded) -->
+    <div id="detailContent" style="display:none">
+
+      <!-- Header -->
+      <div class="place-header">
+        <div class="place-header__cat" id="placeCategory"></div>
+        <h1 class="place-header__title" id="placeTitle"></h1>
+        <div class="place-header__meta">
+          <div class="rating-stars-lg">
+            <span class="stars-lg" id="placeStars">☆☆☆☆☆</span>
+            <strong id="placeRating">0.0</strong>
+          </div>
+          <span class="meta-item" id="reviewCountMeta"></span>
+          <span class="meta-item" id="viewCountMeta"></span>
+          <span class="meta-item" id="priceMeta"></span>
+        </div>
+      </div>
+
+      <!-- Tags -->
+      <div class="tags-row" id="placeTags"></div>
+
+      <!-- Description -->
+      <div class="section-label">Tavsif</div>
+      <div class="place-description collapsed" id="placeDesc"></div>
+      <button class="read-more-btn" id="readMoreBtn" onclick="toggleDesc()">Ko'proq o'qish ↓</button>
+
+      <!-- Working Hours -->
+      <div id="hoursSection" style="display:none">
+        <div class="section-label">Ish vaqti</div>
+        <div class="hours-grid" id="hoursGrid"></div>
+      </div>
+
+      <!-- Map -->
+      <div class="section-label">Joylashuv</div>
+      <a class="map-embed" id="mapLink" href="#" target="_blank" rel="noopener">
+        <span class="map-embed__icon">🗺</span>
+        <span id="mapAddress">Xaritada ko'rish</span>
+      </a>
+
+      <!-- Reviews -->
+      <div class="reviews-section">
+        <div class="section-label">Izohlar</div>
+
+        <!-- Summary -->
+        <div class="reviews-summary" id="reviewsSummary" style="display:none">
+          <div class="rating-big">
+            <div class="rating-big__num" id="avgRatingBig">0.0</div>
+            <div class="rating-big__stars" id="avgStarsBig">☆☆☆☆☆</div>
+            <div class="rating-big__count" id="reviewCountBig">0 izoh</div>
+          </div>
+          <div class="rating-bars" id="ratingBarsEl"></div>
+        </div>
+
+        <!-- Write review button -->
+        <button class="btn btn--teal write-review-btn" onclick="openReviewModal()" id="writeReviewBtn" style="display:none">
+          ✏️ Izoh qoldirish
+        </button>
+
+        <!-- Reviews list -->
+        <div id="reviewsList"></div>
+
+        <!-- Load more -->
+        <button class="btn btn--secondary" id="loadMoreReviews" onclick="loadMoreReviews()" style="display:none;width:100%;margin-top:12px">
+          Ko'proq yuklash
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="detail-sidebar" id="detailSidebar" style="display:none">
+
+    <!-- Info card -->
+    <div class="info-card">
+      <div class="info-card__title">Ma'lumot</div>
+      <div id="infoRows"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="info-card">
+      <div class="action-btns">
+        <button class="btn btn--primary" onclick="getDirections()">🧭 Yo'nalish olish</button>
+        <button class="btn btn--secondary" onclick="sharePlace()">📤 Ulashish</button>
+        <a href="/routes/" class="btn btn--secondary">🗺 Marshrutlarga qo'shish</a>
+      </div>
+    </div>
+
+    <!-- Nearby places -->
+    <div class="info-card" id="nearbyCard" style="display:none">
+      <div class="info-card__title">Yaqin atrofdagi joylar</div>
+      <div class="nearby-list" id="nearbyList"></div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- ═══ REVIEW MODAL ═══ -->
+<div class="modal-overlay" id="reviewModal" style="display:none" onclick="closeReviewModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal__title">
+      Izoh qoldirish
+      <button class="modal__close" onclick="closeReviewModal()">✕</button>
+    </div>
+
+    <!-- Star picker -->
+    <div class="star-picker" id="starPicker">
+      <input type="radio" name="rating" id="s5" value="5"/><label for="s5" title="5 — Ajoyib">★</label>
+      <input type="radio" name="rating" id="s4" value="4"/><label for="s4" title="4 — Yaxshi">★</label>
+      <input type="radio" name="rating" id="s3" value="3"/><label for="s3" title="3 — O'rtacha">★</label>
+      <input type="radio" name="rating" id="s2" value="2"/><label for="s2" title="2 — Yomon">★</label>
+      <input type="radio" name="rating" id="s1" value="1"/><label for="s1" title="1 — Juda yomon">★</label>
+    </div>
+
+    <textarea class="form-textarea" id="reviewComment" placeholder="Tajribangizni bayon qiling... (ixtiyoriy)" rows="4"></textarea>
+    <div class="form-hint">Izoh qoldirishdan oldin tasdiqlanган email talab qilinadi.</div>
+    <button class="btn btn--primary" style="width:100%" onclick="submitReview()">
+      Izohni yuborish
+    </button>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const API = '/api/v1';
+const slug = window.location.pathname.split('/').filter(Boolean)[1];
+
+let placeData   = null;
+let reviewPage  = 1;
+let reviewTotal = 0;
+const PAGE_SIZE = 5;
+
+/* ════ INIT ════ */
+async function init() {
+  await loadPlace();
+  await loadReviews();
+}
+
+/* ════ LOAD PLACE ════ */
+async function loadPlace() {
+  try {
+    const res  = await apiFetchWithRefresh(`${API}/places/${slug}/`);
+    if (!res.ok) { showError(); return; }
+    const p    = await res.json();
+    placeData  = p;
+
+    document.title = `${p.title} — Kokand Guidance`;
+    document.getElementById('bcTitle').textContent = p.title;
+
+    renderGallery(p);
+    renderHeader(p);
+    renderSidebar(p);
+    renderHours(p.working_hours || {});
+
+    document.getElementById('detailSkeleton').style.display = 'none';
+    document.getElementById('detailContent').style.display  = 'block';
+    document.getElementById('detailSidebar').style.display  = 'flex';
+
+    // Fav btn
+    const favBtn = document.getElementById('favBtn');
+    favBtn.textContent    = p.is_favorited ? '♥' : '♡';
+    favBtn.dataset.placeId = p.id;
+    favBtn.classList.toggle('is-active', p.is_favorited);
+
+    // Load nearby
+    loadNearby(p.category?.slug, p.slug);
+
+  } catch { showError(); }
+}
+
+/* ── GALLERY ── */
+function renderGallery(p) {
+  const images = [];
+  if (p.main_image) images.push({ image: p.main_image, caption: p.title });
+  (p.images || []).forEach(img => { if (!images.find(i => i.image === img.image)) images.push(img); });
+
+  const main   = document.getElementById('galleryMain');
+  const thumbs = document.getElementById('galleryThumbs');
+
+  if (!images.length) {
+    document.getElementById('gallery').style.background = 'var(--bg2)';
+    main.style.display = 'none';
+    return;
+  }
+
+  main.src = images[0].image;
+  main.alt = images[0].caption || p.title;
+
+  if (images.length > 1) {
+    thumbs.innerHTML = images.map((img, i) => `
+      <div class="gallery__thumb ${i===0?'active':''}" onclick="switchGallery(${i})" data-idx="${i}">
+        <img src="${img.image}" alt="${img.caption||''}" loading="lazy"/>
+      </div>`).join('');
+  }
+
+  if (p.is_featured) {
+    const badge = document.createElement('div');
+    badge.className = 'gallery__badge';
+    badge.textContent = 'Mashhur joy';
+    document.getElementById('gallery').appendChild(badge);
+  }
+}
+
+function switchGallery(idx) {
+  const imgs   = placeData.images || [];
+  const all    = [];
+  if (placeData.main_image) all.push(placeData.main_image);
+  imgs.forEach(i => { if (i.image !== placeData.main_image) all.push(i.image); });
+
+  document.getElementById('galleryMain').src = all[idx];
+  document.querySelectorAll('.gallery__thumb').forEach((t, i) => t.classList.toggle('active', i === idx));
+}
+
+/* ── HEADER ── */
+function renderHeader(p) {
+  document.getElementById('placeCategory').textContent  = p.category?.title || '';
+  document.getElementById('placeTitle').textContent     = p.title;
+  document.getElementById('placeDesc').textContent      = p.description || p.short_description || '';
+
+  const rating = Number(p.average_rating);
+  const full   = Math.round(rating);
+  document.getElementById('placeStars').textContent  = '★'.repeat(full) + '☆'.repeat(5 - full);
+  document.getElementById('placeRating').textContent = rating.toFixed(1);
+
+  document.getElementById('reviewCountMeta').innerHTML = `👥 <strong>${p.review_count}</strong> izoh`;
+  document.getElementById('viewCountMeta').innerHTML   = `👁 <strong>${p.view_count}</strong> ko'rilgan`;
+
+  const priceLvl = ['Bepul','Arzon ₩','O\'rtacha ₩₩','Qimmat ₩₩₩','Hashamatli ₩₩₩₩'];
+  document.getElementById('priceMeta').innerHTML = `💰 <strong>${priceLvl[p.price_level] || ''}</strong>`;
+
+  // Tags
+  const tagsEl = document.getElementById('placeTags');
+  if (p.tags?.length) {
+    tagsEl.innerHTML = p.tags.map(t =>
+      `<a href="/places/?q=${t.name}" class="tag">${t.name}</a>`).join('');
+  } else {
+    tagsEl.style.display = 'none';
+  }
+
+  // Map link
+  if (p.latitude && p.longitude) {
+    const q = encodeURIComponent(p.address || p.title);
+    document.getElementById('mapLink').href  = `https://www.google.com/maps/search/?api=1&query=${q}`;
+    document.getElementById('mapAddress').textContent = p.address || 'Xaritada ko\'rish';
+  } else if (p.address) {
+    document.getElementById('mapAddress').textContent = p.address;
+  }
+
+  // Read more
+  const desc = document.getElementById('placeDesc');
+  if (desc.scrollHeight <= 130) {
+    document.getElementById('readMoreBtn').style.display = 'none';
+    desc.classList.remove('collapsed');
+  }
+}
+
+/* ── SIDEBAR ── */
+function renderSidebar(p) {
+  const rows = [];
+  if (p.address)  rows.push({ icon:'📍', label:'Manzil',   val: p.address });
+  if (p.phone)    rows.push({ icon:'📞', label:'Telefon',  val: `<a href="tel:${p.phone}">${p.phone}</a>` });
+  if (p.website)  rows.push({ icon:'🌐', label:'Veb-sayt', val: `<a href="${p.website}" target="_blank" rel="noopener">Ochish →</a>` });
+  if (p.average_price) {
+    rows.push({ icon:'💰', label:"O'rtacha narx", val: `${Number(p.average_price).toLocaleString()} UZS` });
+  }
+
+  document.getElementById('infoRows').innerHTML = rows.map(r => `
+    <div class="info-row">
+      <span class="info-row__icon">${r.icon}</span>
+      <div>
+        <div class="info-row__label">${r.label}</div>
+        <div class="info-row__val">${r.val}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ── HOURS ── */
+function renderHours(wh) {
+  if (!Object.keys(wh).length) return;
+  const days = { mon:'Dushanba', tue:'Seshanba', wed:'Chorshanba', thu:'Payshanba', fri:'Juma', sat:'Shanba', sun:'Yakshanba' };
+  const today = ['sun','mon','tue','wed','thu','fri','sat'][new Date().getDay()];
+
+  document.getElementById('hoursGrid').innerHTML = Object.entries(wh).map(([d, t]) => `
+    <div class="hour-row ${d === today ? 'today' : ''}">
+      <span class="hour-day">${days[d] || d}</span>
+      <span class="hour-time ${t==='closed'?'closed':''}">${t === 'closed' ? 'Yopiq' : t}</span>
+    </div>`).join('');
+
+  document.getElementById('hoursSection').style.display = 'block';
+}
+
+/* ── REVIEWS ── */
+async function loadReviews(append = false) {
+  try {
+    const res  = await fetch(`${API}/places/${slug}/reviews/?page=${reviewPage}&page_size=${PAGE_SIZE}`);
+    const data = await res.json();
+    reviewTotal = data.count || 0;
+
+    renderReviewSummary();
+
+    const list = document.getElementById('reviewsList');
+    if (!append) list.innerHTML = '';
+    if (!data.results?.length && !append) {
+      list.innerHTML = `<div class="no-reviews"><div class="no-reviews__icon">💬</div>Hali izoh yo'q. Birinchi bo'ling!</div>`;
+    } else {
+      list.innerHTML += (data.results || []).map(r => renderReview(r)).join('');
+    }
+
+    const loadMore = document.getElementById('loadMoreReviews');
+    loadMore.style.display = (reviewPage * PAGE_SIZE < reviewTotal) ? 'block' : 'none';
+
+    // Show write btn if authenticated
+    const token = localStorage.getItem('access_token');
+    document.getElementById('writeReviewBtn').style.display = token ? 'block' : 'none';
+
+  } catch { /* silent */ }
+}
+
+function renderReviewSummary() {
+  if (!placeData || !reviewTotal) return;
+  document.getElementById('reviewsSummary').style.display = 'flex';
+
+  const r = Number(placeData.average_rating);
+  document.getElementById('avgRatingBig').textContent = r.toFixed(1);
+  document.getElementById('avgStarsBig').textContent  = '★'.repeat(Math.round(r)) + '☆'.repeat(5 - Math.round(r));
+  document.getElementById('reviewCountBig').textContent = `${reviewTotal} izoh`;
+
+  // Placeholder bars (real distribution would need extra API)
+  const dist = [45, 28, 16, 7, 4];
+  document.getElementById('ratingBarsEl').innerHTML = [5,4,3,2,1].map((star, i) => `
+    <div class="rating-bar-row">
+      <span class="label">${star}</span>
+      <div class="rating-bar-track">
+        <div class="rating-bar-fill" style="width:${dist[i]}%"></div>
+      </div>
+      <span class="pct">${dist[i]}%</span>
+    </div>`).join('');
+}
+
+function renderReview(r) {
+  const stars    = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+  const date     = new Date(r.created_at).toLocaleDateString('uz-UZ', { year:'numeric', month:'long', day:'numeric' });
+  const initials = (r.user?.display_name || '?').slice(0, 2).toUpperCase();
+  const avatar   = r.user?.profile?.avatar
+    ? `<img src="${r.user.profile.avatar}" alt="${r.user.display_name}" class="reviewer__avatar"/>`
+    : `<div class="reviewer__avatar">${initials}</div>`;
+  const imgs = (r.images || []).map(i =>
+    `<img src="${i.image}" alt="" class="review-img" onclick="lightbox('${i.image}')">`).join('');
+  const token = localStorage.getItem('access_token');
+
+  return `
+  <div class="review-card" id="review-${r.id}">
+    <div class="review-card__header">
+      <div class="reviewer">
+        ${avatar}
+        <div>
+          <div class="reviewer__name">${r.user?.display_name || 'Foydalanuvchi'}</div>
+          <div class="reviewer__date">${date}</div>
+        </div>
+      </div>
+      <span class="review-stars">${stars}</span>
+    </div>
+    ${r.comment ? `<p class="review-text">${r.comment}</p>` : ''}
+    ${imgs ? `<div class="review-images">${imgs}</div>` : ''}
+    ${token ? `
+    <div class="review-actions">
+      <button class="review-action-btn" onclick="flagReview(${r.id})">🚩 Xabar berish</button>
+    </div>` : ''}
+  </div>`;
+}
+
+function loadMoreReviews() {
+  reviewPage++;
+  loadReviews(true);
+}
+
+/* ── NEARBY ── */
+async function loadNearby(catSlug, currentSlug) {
+  try {
+    const res  = await fetch(`${API}/places/?category__slug=${catSlug}&page_size=4&ordering=-average_rating`);
+    const data = await res.json();
+    const places = (data.results || []).filter(p => p.slug !== currentSlug).slice(0, 3);
+    if (!places.length) return;
+
+    document.getElementById('nearbyCard').style.display = 'block';
+    document.getElementById('nearbyList').innerHTML = places.map(p => `
+      <a href="/places/${p.slug}/" class="nearby-item">
+        ${p.main_image
+          ? `<img src="${p.main_image}" alt="${p.title}" class="nearby-img"/>`
+          : `<div class="nearby-img" style="display:flex;align-items:center;justify-content:center;font-size:22px">🏛</div>`}
+        <div>
+          <div class="nearby-name">${p.title}</div>
+          <div class="nearby-meta">
+            <span class="nearby-stars">${'★'.repeat(Math.round(p.average_rating))}</span>
+            ${Number(p.average_rating).toFixed(1)} · ${p.review_count} izoh
+          </div>
+        </div>
+      </a>`).join('');
+  } catch { /* silent */ }
+}
+
+/* ── REVIEW MODAL ── */
+function openReviewModal() {
+  const token = localStorage.getItem('access_token');
+  if (!token) { window.location.href = `/auth/login/?next=/places/${slug}/`; return; }
+  document.getElementById('reviewModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeReviewModal(e) {
+  if (e && e.target !== document.getElementById('reviewModal')) return;
+  document.getElementById('reviewModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+async function submitReview() {
+  const rating  = document.querySelector('input[name="rating"]:checked')?.value;
+  const comment = document.getElementById('reviewComment').value.trim();
+  if (!rating) { showFlash('Reyting tanlang', 'warning'); return; }
+
+  try {
+    const res = await apiFetchWithRefresh(`${API}/places/${slug}/reviews/`, {
+      method: 'POST',
+      body: JSON.stringify({ rating: parseInt(rating), comment }),
+    });
+    if (res.ok) {
+      showFlash('Izohingiz qabul qilindi!', 'success');
+      closeReviewModal();
+      reviewPage = 1;
+      await loadReviews();
+    } else {
+      const err = await res.json();
+      showFlash(err.detail || 'Xatolik yuz berdi', 'error');
+    }
+  } catch { showFlash('Xatolik yuz berdi', 'error'); }
+}
+
+async function flagReview(id) {
+  if (!confirm('Bu izohni shikoyat sifatida bildirmoqchimisiz?')) return;
+  showFlash('Shikoyat yuborildi', 'success');
+}
+
+/* ── HELPERS ── */
+function toggleDesc() {
+  const desc = document.getElementById('placeDesc');
+  const btn  = document.getElementById('readMoreBtn');
+  const collapsed = desc.classList.toggle('collapsed');
+  btn.textContent = collapsed ? 'Ko\'proq o\'qish ↓' : 'Yopish ↑';
+}
+
+function getDirections() {
+  if (!placeData) return;
+  const q = placeData.latitude && placeData.longitude
+    ? `${placeData.latitude},${placeData.longitude}`
+    : encodeURIComponent(placeData.address || placeData.title);
+  window.open(`https://www.google.com/maps/dir/?api=1&destination=${q}`, '_blank');
+}
+
+function sharePlace() {
+  if (navigator.share) {
+    navigator.share({ title: placeData?.title, url: window.location.href });
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    showFlash('Havola nusxalandi!', 'success');
+  }
+}
+
+function lightbox(src) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out';
+  overlay.innerHTML = `<img src="${src}" style="max-width:90vw;max-height:90vh;border-radius:8px;object-fit:contain"/>`;
+  overlay.onclick = () => document.body.removeChild(overlay);
+  document.body.appendChild(overlay);
+}
+
+function showError() {
+  document.getElementById('detailSkeleton').innerHTML = `
+    <div style="text-align:center;padding:60px 0">
+      <p style="font-size:48px">😔</p>
+      <h2 style="margin:16px 0 8px">Joy topilmadi</h2>
+      <p style="color:var(--ink3);margin-bottom:24px">Bu joy mavjud emas yoki o'chirilgan.</p>
+      <a href="/places/" class="btn btn--primary">Joylar ro'yxatiga →</a>
+    </div>`;
+}
+
+init();
+</script>
+{% endblock %}
