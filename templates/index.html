@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uz">
 <head>
@@ -975,11 +974,11 @@
     Kokand
   </a>
   <ul class="nav-links">
-    <li><a href="/places" data-i18n="nav_places">Joylar</a></li>
-    <li><a href="/routes" data-i18n="nav_routes">Marshrutlar</a></li>
-    <li><a href="/categories" data-i18n="nav_categories">Kategoriyalar</a></li>
-    <li><a href="/about" data-i18n="nav_about">Haqimizda</a></li>
-    <li><a href="/auth/login" class="nav-cta" data-i18n="nav_login">Kirish</a></li>
+    <li><a href="/places/" data-i18n="nav_places">Joylar</a></li>
+    <li><a href="/routes/" data-i18n="nav_routes">Marshrutlar</a></li>
+    <li><a href="/categories/" data-i18n="nav_categories">Kategoriyalar</a></li>
+    <li><a href="/about/" data-i18n="nav_about">Haqimizda</a></li>
+    <li><a href="/auth/login/" class="nav-cta" data-i18n="nav_login">Kirish</a></li>
   </ul>
   <div class="lang-switcher">
     <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
@@ -1003,14 +1002,14 @@
 
     <div class="hero-search">
       <input class="hero-search-input" type="text" data-i18n-placeholder="search_placeholder" placeholder="Joy yoki marshrut qidiring..." />
-      <button class="hero-search-btn" onclick="window.location='/places'">
+      <button class="hero-search-btn" onclick="window.location='/places/'">
         🔍 <span data-i18n="search_btn">Qidirish</span>
       </button>
     </div>
 
     <div class="hero-actions" style="margin-top:20px">
-      <a href="/routes" class="btn-primary" data-i18n="hero_cta1">Marshrutlarni ko'rish →</a>
-      <a href="/places" class="btn-secondary" data-i18n="hero_cta2">Barcha joylar</a>
+      <a href="/routes/" class="btn-primary" data-i18n="hero_cta1">Marshrutlarni ko'rish →</a>
+      <a href="/places/" class="btn-secondary" data-i18n="hero_cta2">Barcha joylar</a>
     </div>
   </div>
 
@@ -1111,11 +1110,11 @@
       <div class="section-tag" data-i18n="places_tag">Tavsiya etiladi</div>
       <h2 class="section-title" data-i18n="places_title">Eng mashhur joylar</h2>
     </div>
-    <a href="/places" class="btn-primary reveal" style="transition-delay:.1s" data-i18n="places_all">Hammasini ko'rish →</a>
+    <a href="/places/" class="btn-primary reveal" style="transition-delay:.1s" data-i18n="places_all">Hammasini ko'rish →</a>
   </div>
   <div class="places-grid">
 
-    <a href="/places/xudoyar-xon-saroyi" class="place-card reveal" style="transition-delay:.05s">
+    <a href="/places/xudoyar-xon-saroyi/" class="place-card reveal" style="transition-delay:.05s">
       <div class="place-img">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Kokand_Palace.jpg/640px-Kokand_Palace.jpg" alt="Xudoyar Xon saroyi" loading="lazy"/>
         <div class="place-badge" data-i18n="featured">Mashhur</div>
@@ -1135,7 +1134,7 @@
       </div>
     </a>
 
-    <a href="/places/juma-masjid" class="place-card reveal" style="transition-delay:.1s">
+    <a href="/places/juma-masjid/" class="place-card reveal" style="transition-delay:.1s">
       <div class="place-img">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Juma_mosque_in_Kokand.jpg/640px-Juma_mosque_in_Kokand.jpg" alt="Juma masjid" loading="lazy"/>
         <button class="place-fav" onclick="toggleFav(this,event)" aria-label="Sevimli">♡</button>
@@ -1154,7 +1153,7 @@
       </div>
     </a>
 
-    <a href="/places/tarixi-muzey" class="place-card reveal" style="transition-delay:.15s">
+    <a href="/places/tarixi-muzey/" class="place-card reveal" style="transition-delay:.15s">
       <div class="place-img">
         <img src="https://images.unsplash.com/photo-1564399580075-5dfe19c205f3?w=640&q=80" alt="Tarix va madaniyat muzeyi" loading="lazy"/>
         <button class="place-fav" onclick="toggleFav(this,event)" aria-label="Sevimli">♡</button>
@@ -1183,11 +1182,11 @@
       <div class="section-tag" data-i18n="routes_tag">Marshrutlar</div>
       <h2 class="section-title" data-i18n="routes_title">Tur yo'nalishlar</h2>
     </div>
-    <a href="/routes" class="btn-primary reveal" style="transition-delay:.1s" data-i18n="routes_all">Barcha marshrutlar →</a>
+    <a href="/routes/" class="btn-primary reveal" style="transition-delay:.1s" data-i18n="routes_all">Barcha marshrutlar →</a>
   </div>
   <div class="routes-list">
 
-    <a href="/routes/tarixiy-markaz" class="route-card reveal">
+    <a href="/routes/tarixiy-markaz/" class="route-card reveal">
       <div class="route-img">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Kokand_Palace.jpg/640px-Kokand_Palace.jpg" alt="Tarixiy markaz turi" loading="lazy"/>
         <span class="route-diff diff-easy" data-i18n="easy">Oson</span>
@@ -1215,7 +1214,7 @@
       </div>
     </a>
 
-    <a href="/routes/diniy-obidalar" class="route-card reveal" style="transition-delay:.1s">
+    <a href="/routes/diniy-obidalar/" class="route-card reveal" style="transition-delay:.1s">
       <div class="route-img">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Juma_mosque_in_Kokand.jpg/640px-Juma_mosque_in_Kokand.jpg" alt="Diniy obidalar" loading="lazy"/>
         <span class="route-diff diff-moderate" data-i18n="moderate">O'rta</span>
@@ -1254,7 +1253,7 @@
       <div class="section-tag">Xarita</div>
       <h2 class="section-title" data-i18n="map_title">Barcha joylar interaktiv xaritada</h2>
       <p class="section-sub" data-i18n="map_sub" style="margin-bottom:32px">Kokandning barcha diqqatga sazovor joylarini xaritada ko'ring, filtrlang va marshrutingizni rejalashtiring.</p>
-      <a href="/map" class="btn-primary" data-i18n="map_btn">Xaritani ochish →</a>
+      <a href="/map/" class="btn-primary" data-i18n="map_btn">Xaritani ochish →</a>
     </div>
   </div>
   <div class="map-visual reveal-right">
@@ -1333,7 +1332,7 @@
     <h2 data-i18n="cta_title">Kokandni yanada chuqurroq o'rganing</h2>
     <p data-i18n="cta_sub">Ro'yxatdan o'ting — joylarni sevimlilarga qo'shing, marshrutlar tuzing va izoh qoldiring.</p>
   </div>
-  <a href="/auth/register" class="btn-white reveal-right" data-i18n="cta_btn">Bepul ro'yxatdan o'tish →</a>
+  <a href="/auth/register/" class="btn-white reveal-right" data-i18n="cta_btn">Bepul ro'yxatdan o'tish →</a>
 </div>
 
 <!-- ═══════════════════════════════════════════ FOOTER ═══════════════════════ -->
@@ -1352,27 +1351,27 @@
     <div class="footer-col">
       <h4 data-i18n="footer_nav">Navigatsiya</h4>
       <ul>
-        <li><a href="/places" data-i18n="nav_places">Joylar</a></li>
-        <li><a href="/routes" data-i18n="nav_routes">Marshrutlar</a></li>
-        <li><a href="/categories" data-i18n="nav_categories">Kategoriyalar</a></li>
-        <li><a href="/map" data-i18n="nav_map">Xarita</a></li>
+        <li><a href="/places/" data-i18n="nav_places">Joylar</a></li>
+        <li><a href="/routes/" data-i18n="nav_routes">Marshrutlar</a></li>
+        <li><a href="/categories/" data-i18n="nav_categories">Kategoriyalar</a></li>
+        <li><a href="/map/" data-i18n="nav_map">Xarita</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_account">Hisob</h4>
       <ul>
-        <li><a href="/auth/login" data-i18n="nav_login">Kirish</a></li>
-        <li><a href="/auth/register" data-i18n="nav_register">Ro'yxatdan o'tish</a></li>
-        <li><a href="/favorites" data-i18n="nav_favorites">Sevimlilar</a></li>
-        <li><a href="/profile" data-i18n="nav_profile">Profil</a></li>
+        <li><a href="/auth/login/" data-i18n="nav_login">Kirish</a></li>
+        <li><a href="/auth/register/" data-i18n="nav_register">Ro'yxatdan o'tish</a></li>
+        <li><a href="/favorites/" data-i18n="nav_favorites">Sevimlilar</a></li>
+        <li><a href="/profile/" data-i18n="nav_profile">Profil</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_info">Ma'lumot</h4>
       <ul>
-        <li><a href="/about" data-i18n="nav_about">Haqimizda</a></li>
-        <li><a href="/contact" data-i18n="nav_contact">Aloqa</a></li>
-        <li><a href="/privacy" data-i18n="nav_privacy">Maxfiylik</a></li>
+        <li><a href="/about/" data-i18n="nav_about">Haqimizda</a></li>
+        <li><a href="/contact/" data-i18n="nav_contact">Aloqa</a></li>
+        <li><a href="/privacy/" data-i18n="nav_privacy">Maxfiylik</a></li>
         <li><a href="/api/v1/" data-i18n="nav_api">API</a></li>
       </ul>
     </div>

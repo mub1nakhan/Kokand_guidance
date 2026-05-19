@@ -109,105 +109,56 @@ def page(template, name=None):
     return TemplateView.as_view(template_name=template)
  
  
+"""
+core/urls.py
+============
+Markaziy URL konfiguratsiyasi.
+Har bir app o'zining urls.py ga ega — bu yerda faqat include() qilinadi.
+"""
+
+from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
+from django.urls import path, include
+
+from users.urls import auth_urlpatterns
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
+
 urlpatterns = [
- 
-    # ── Asosiy ────────────────────────────────────────────────────────────
-    path(
-        "",
-        page("home/index.html"),
-        name="home",
-    ),
- 
-    # ── Joylar ────────────────────────────────────────────────────────────
-    path(
-        "places/",
-        page("places/list.html"),
-        name="place-list-page",
-    ),
-    path(
-        "places/<slug:slug>/",
-        page("places/detail.html"),
-        name="place-detail-page",
-    ),
- 
-    # ── Marshrutlar ───────────────────────────────────────────────────────
-    path(
-        "routes/",
-        page("routes/list.html"),
-        name="route-list-page",
-    ),
-    path(
-        "routes/<slug:slug>/",
-        page("routes/detail.html"),
-        name="route-detail-page",
-    ),
- 
-    # ── Kategoriyalar ─────────────────────────────────────────────────────
-    path(
-        "categories/",
-        page("categories/list.html"),
-        name="category-list-page",
-    ),
- 
-    # ── Xarita ────────────────────────────────────────────────────────────
-    path(
-        "map/",
-        page("map/index.html"),
-        name="map-page",
-    ),
- 
-    # ── Auth ──────────────────────────────────────────────────────────────
-    path(
-        "auth/login/",
-        page("auth/login.html"),
-        name="login-page",
-    ),
-    path(
-        "auth/register/",
-        page("auth/register.html"),
-        name="register-page",
-    ),
- 
-    # ── Profil ────────────────────────────────────────────────────────────
-    path(
-        "profile/",
-        page("users/profile.html"),
-        name="profile-page",
-    ),
-    path(
-        "profile/edit/",
-        page("users/profile_edit.html"),
-        name="profile-edit-page",
-    ),
-    path(
-        "profile/<uuid:id>/",
-        page("users/public_profile.html"),
-        name="public-profile-page",
-    ),
- 
-    # ── Sevimlilar ────────────────────────────────────────────────────────
-    path(
-        "favorites/",
-        page("favorites/list.html"),
-        name="favorites-page",
-    ),
- 
-    # ── Statik sahifalar ──────────────────────────────────────────────────
-    path(
-        "about/",
-        page("static_pages/about.html"),
-        name="about-page",
-    ),
-    path(
-        "contact/",
-        page("static_pages/contact.html"),
-        name="contact-page",
-    ),
-    path(
-        "privacy/",
-        page("static_pages/privacy.html"),
-        name="privacy-page",
-    ),
- 
+
+    # ------------------------------------------------------------------ Admin
+    path("admin/", admin.site.urls),
+
+    # ------------------------------------------------------------------ API Docs (Swagger)
+    path("api/schema/",         SpectacularAPIView.as_view(),        name="schema"),
+    path("api/docs/",           SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("api/docs/redoc/",     SpectacularRedocView.as_view(url_name="schema"),   name="redoc"),
+
+    # ------------------------------------------------------------------ Auth
+    path("api/v1/auth/", include((auth_urlpatterns, "auth"))),
+
+    # ------------------------------------------------------------------ Users
+    path("api/v1/users/", include("users.urls")),
+
+    # ------------------------------------------------------------------ Categories
+    path("api/v1/categories/", include("categories.urls")),
+
+    # ------------------------------------------------------------------ Places  (reviews nested ichida)
+    path("api/v1/places/", include("places.urls")),
+
+    # ------------------------------------------------------------------ Routes
+    path("api/v1/routes/", include("routes.urls")),
+
+    # ------------------------------------------------------------------ Favorites
+    path("api/v1/favorites/", include("favorites.urls")),
+
 ]
- 
+
+# Media & static fayllar development rejimida
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,  document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
