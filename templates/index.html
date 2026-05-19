@@ -1,0 +1,1583 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kokand — Qadimiy Shahar Kashfiyoti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --gold:    #C9912A;
+    --gold-lt: #F0D080;
+    --gold-dk: #7A5410;
+    --teal:    #1A7A6E;
+    --teal-lt: #A8D8D2;
+    --teal-dk: #0E4740;
+    --bg:      #FAF7F2;
+    --bg2:     #F2EDE3;
+    --ink:     #1C1A16;
+    --ink2:    #4A4438;
+    --ink3:    #8C8070;
+    --white:   #FFFFFF;
+    --radius:  16px;
+    --shadow:  0 8px 40px rgba(28,26,22,.10);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ────────────────────── SCROLL ANIMATIONS ────────────────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+  /* ────────────────────── NAVBAR ────────────────────── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 5%;
+    transition: background .3s, box-shadow .3s;
+  }
+  nav.scrolled {
+    background: rgba(250,247,242,.95);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 2px 20px rgba(0,0,0,.08);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--white);
+    text-decoration: none;
+    transition: color .3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  nav.scrolled .nav-logo { color: var(--ink); }
+  .nav-logo span {
+    display: inline-block;
+    width: 36px; height: 36px;
+    background: var(--gold);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255,255,255,.85);
+    text-decoration: none;
+    transition: color .3s;
+    position: relative;
+  }
+  nav.scrolled .nav-links a { color: var(--ink2); }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform .3s;
+  }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  .lang-switcher {
+    display: flex;
+    gap: 4px;
+    background: rgba(255,255,255,.15);
+    border-radius: 8px;
+    padding: 4px;
+  }
+  nav.scrolled .lang-switcher { background: var(--bg2); }
+  .lang-btn {
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,.7);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all .2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  nav.scrolled .lang-btn { color: var(--ink3); }
+  .lang-btn.active {
+    background: var(--gold);
+    color: var(--white) !important;
+  }
+  .nav-cta {
+    background: var(--gold);
+    color: var(--white) !important;
+    padding: 9px 22px !important;
+    border-radius: 10px;
+    font-weight: 600 !important;
+    transition: background .2s, transform .2s !important;
+  }
+  .nav-cta:hover { background: var(--gold-dk); transform: translateY(-1px); }
+  .nav-cta::after { display: none !important; }
+
+  /* ────────────────────── HERO ────────────────────── */
+  .hero {
+    position: relative;
+    height: 100vh;
+    min-height: 700px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(170deg, rgba(10,30,20,.65) 0%, rgba(10,30,20,.3) 60%, rgba(10,30,20,.7) 100%),
+      url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Kokand_Palace.jpg/1280px-Kokand_Palace.jpg') center/cover no-repeat;
+    transform: scale(1.05);
+    animation: heroZoom 12s ease-in-out infinite alternate;
+  }
+  @keyframes heroZoom {
+    from { transform: scale(1.05); }
+    to   { transform: scale(1.12); }
+  }
+
+  /* Islomiy naqsh overlay */
+  .hero-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: .06;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9912A' fill-opacity='1'%3E%3Cpath d='M30 0l8.66 15H21.34L30 0zm0 60l-8.66-15h17.32L30 60zM0 30l15-8.66v17.32L0 30zm60 0l-15 8.66V21.34L60 30zM30 22l8 4.62v9.24L30 40l-8-4.14V26.62L30 22z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 780px;
+    padding: 0 5%;
+    animation: heroFadeUp .9s ease both;
+  }
+  @keyframes heroFadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(201,145,42,.2);
+    border: 1px solid rgba(201,145,42,.5);
+    color: var(--gold-lt);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    backdrop-filter: blur(8px);
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: .4; transform: scale(1.4); }
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.05;
+    margin-bottom: 24px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--gold-lt);
+    display: block;
+  }
+  .hero p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: rgba(255,255,255,.8);
+    max-width: 520px;
+    margin-bottom: 40px;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--gold);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 32px;
+    border-radius: 12px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background .2s, transform .2s, box-shadow .2s;
+    box-shadow: 0 4px 24px rgba(201,145,42,.35);
+  }
+  .btn-primary:hover {
+    background: var(--gold-dk);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(201,145,42,.45);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,.12);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 14px 32px;
+    border-radius: 12px;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,.25);
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+    backdrop-filter: blur(8px);
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,.2); transform: translateY(-2px); }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,.6);
+    font-size: 12px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    animation: scrollBounce 2s ease-in-out infinite;
+  }
+  @keyframes scrollBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(8px); }
+  }
+  .scroll-line {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, rgba(255,255,255,.6), transparent);
+  }
+
+  /* stats bar */
+  .hero-stats {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    background: rgba(10,20,15,.7);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+  .hero-stat {
+    flex: 1;
+    max-width: 200px;
+    padding: 20px 24px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,.08);
+  }
+  .hero-stat:last-child { border-right: none; }
+  .hero-stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold-lt);
+    display: block;
+  }
+  .hero-stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,.5);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-top: 2px;
+    display: block;
+  }
+
+  /* ────────────────────── SECTION COMMON ────────────────────── */
+  section { padding: 100px 5%; }
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 16px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 24px; height: 2px;
+    background: var(--teal);
+    border-radius: 2px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    font-size: 17px;
+    color: var(--ink3);
+    line-height: 1.7;
+    max-width: 560px;
+  }
+  .section-header { margin-bottom: 60px; }
+
+  /* ────────────────────── CATEGORIES ────────────────────── */
+  .categories { background: var(--white); }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+  }
+  .cat-card {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    aspect-ratio: 3/4;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    transition: transform .3s;
+  }
+  .cat-card:hover { transform: translateY(-6px); }
+  .cat-card img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .5s;
+  }
+  .cat-card:hover img { transform: scale(1.08); }
+  .cat-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10,25,18,.85) 0%, rgba(10,25,18,.1) 60%);
+  }
+  .cat-card-body {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 20px 16px 18px;
+  }
+  .cat-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: rgba(201,145,42,.2);
+    border: 1px solid rgba(201,145,42,.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  .cat-card-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+  }
+  .cat-card-body span {
+    font-size: 12px;
+    color: var(--gold-lt);
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* ────────────────────── FEATURED PLACES ────────────────────── */
+  .places { background: var(--bg); }
+  .places-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 28px;
+  }
+  .place-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform .3s, box-shadow .3s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .place-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(28,26,22,.15);
+  }
+  .place-img {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+  }
+  .place-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .5s;
+  }
+  .place-card:hover .place-img img { transform: scale(1.07); }
+  .place-badge {
+    position: absolute;
+    top: 14px; left: 14px;
+    background: var(--gold);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+  }
+  .place-fav {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.9);
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    transition: transform .2s, background .2s;
+    backdrop-filter: blur(8px);
+  }
+  .place-fav:hover { transform: scale(1.15); background: var(--white); }
+  .place-fav.active { color: #e74c3c; }
+  .place-body { padding: 20px 22px 24px; }
+  .place-cat {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 8px;
+  }
+  .place-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .place-body p {
+    font-size: 14px;
+    color: var(--ink3);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .place-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid #F0EDE6;
+  }
+  .place-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .stars { color: var(--gold); font-size: 13px; }
+  .place-rating span { color: var(--ink3); font-weight: 400; font-size: 13px; }
+  .place-price {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--teal);
+    background: #E8F5F2;
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+
+  /* ────────────────────── ROUTES / MARSHRUTLAR ────────────────────── */
+  .routes { background: var(--white); }
+  .routes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .route-card {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg);
+    border: 1px solid #EAE4D8;
+    transition: transform .3s, box-shadow .3s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .route-card:hover {
+    transform: translateX(6px);
+    box-shadow: var(--shadow);
+  }
+  .route-img {
+    position: relative;
+    overflow: hidden;
+  }
+  .route-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .5s;
+  }
+  .route-card:hover .route-img img { transform: scale(1.06); }
+  .route-diff {
+    position: absolute;
+    top: 14px; left: 14px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+  .diff-easy { background: #D4EDDA; color: #145A32; }
+  .diff-moderate { background: #FFF3CD; color: #7D5E00; }
+  .diff-hard { background: #F8D7DA; color: #721C24; }
+  .route-body {
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .route-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .route-body p {
+    font-size: 14px;
+    color: var(--ink3);
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+  .route-chips {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink2);
+    background: var(--white);
+    border: 1px solid #E0D9CF;
+    padding: 5px 14px;
+    border-radius: 100px;
+  }
+  .chip-icon { font-size: 15px; }
+  .route-stops {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .stop-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--teal-lt);
+    border: 2px solid var(--teal);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--teal-dk);
+  }
+  .stop-line {
+    flex: 1;
+    height: 2px;
+    background: repeating-linear-gradient(to right, var(--teal-lt) 0, var(--teal-lt) 6px, transparent 6px, transparent 12px);
+    min-width: 16px;
+    max-width: 30px;
+  }
+
+  /* ────────────────────── MAP TEASER ────────────────────── */
+  .map-section {
+    background: var(--teal-dk);
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 500px;
+    overflow: hidden;
+  }
+  .map-text {
+    padding: 80px 6% 80px 6%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .map-text .section-tag { color: var(--teal-lt); }
+  .map-text .section-tag::before { background: var(--teal-lt); }
+  .map-text .section-title { color: var(--white); }
+  .map-text .section-sub { color: rgba(255,255,255,.65); max-width: 440px; }
+  .map-visual {
+    position: relative;
+    overflow: hidden;
+  }
+  .map-visual img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: .6;
+    filter: hue-rotate(140deg) saturate(0.7);
+  }
+  .map-pins {
+    position: absolute;
+    inset: 0;
+  }
+  .map-pin {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform .2s;
+  }
+  .map-pin:hover { transform: scale(1.15) translateY(-4px); }
+  .pin-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 3px solid var(--white);
+    box-shadow: 0 0 0 4px rgba(201,145,42,.3);
+    animation: pinPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pinPulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(201,145,42,.3); }
+    50%       { box-shadow: 0 0 0 10px rgba(201,145,42,.0); }
+  }
+  .pin-label {
+    background: var(--white);
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-top: 6px;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  }
+
+  /* ────────────────────── REVIEWS ────────────────────── */
+  .reviews-section { background: var(--bg); }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .review-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .review-quote {
+    position: absolute;
+    top: 20px; right: 24px;
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    color: #F0E8D8;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .review-stars { color: var(--gold); font-size: 16px; margin-bottom: 14px; }
+  .review-text {
+    font-size: 15px;
+    color: var(--ink2);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .reviewer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid #F0EDE6;
+    padding-top: 16px;
+  }
+  .reviewer-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--bg2);
+    border: 2px solid var(--gold-lt);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px;
+    color: var(--gold-dk);
+    flex-shrink: 0;
+  }
+  .reviewer-info h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .reviewer-info span {
+    font-size: 12px;
+    color: var(--ink3);
+  }
+
+  /* ────────────────────── CTA BANNER ────────────────────── */
+  .cta-banner {
+    background: var(--gold);
+    padding: 80px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-banner::before {
+    content: '';
+    position: absolute;
+    right: -60px; top: -60px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.1);
+  }
+  .cta-banner::after {
+    content: '';
+    position: absolute;
+    right: 100px; bottom: -80px;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.06);
+  }
+  .cta-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .cta-text p {
+    font-size: 16px;
+    color: rgba(255,255,255,.8);
+    max-width: 500px;
+  }
+  .btn-white {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--white);
+    color: var(--gold-dk);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 14px 32px;
+    border-radius: 12px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 4px 20px rgba(0,0,0,.12);
+    flex-shrink: 0;
+  }
+  .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,.18); }
+
+  /* ────────────────────── FOOTER ────────────────────── */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,.7);
+    padding: 64px 5% 32px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-brand h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+  .footer-brand p {
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .social-links { display: flex; gap: 10px; }
+  .social-link {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    color: rgba(255,255,255,.6);
+    text-decoration: none;
+    transition: background .2s, color .2s;
+  }
+  .social-link:hover { background: var(--gold); color: var(--white); }
+  .footer-col h4 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 10px; }
+  .footer-col a {
+    font-size: 14px;
+    color: rgba(255,255,255,.55);
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .footer-col a:hover { color: var(--gold-lt); }
+  .footer-bottom {
+    padding-top: 28px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: rgba(255,255,255,.35);
+  }
+
+  /* ────────────────────── SEARCH BAR (hero içinde) ────────────────────── */
+  .hero-search {
+    display: flex;
+    gap: 0;
+    background: var(--white);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,.25);
+    max-width: 600px;
+    margin-top: 32px;
+  }
+  .hero-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 16px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    background: transparent;
+  }
+  .hero-search-input::placeholder { color: var(--ink3); }
+  .hero-search-btn {
+    background: var(--gold);
+    color: var(--white);
+    border: none;
+    padding: 16px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-search-btn:hover { background: var(--gold-dk); }
+
+  /* ────────────────────── RESPONSIVE ────────────────────── */
+  @media (max-width: 900px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .map-section { grid-template-columns: 1fr; }
+    .map-visual { min-height: 300px; }
+    .route-card { grid-template-columns: 1fr; }
+    .route-img { height: 200px; }
+    .nav-links { display: none; }
+    .hero-stats { display: none; }
+    .cta-banner { flex-direction: column; text-align: center; }
+  }
+  @media (max-width: 600px) {
+    section { padding: 64px 5%; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ NAVBAR ═══════════════════════ -->
+<nav id="navbar">
+  <a href="/" class="nav-logo">
+    <span>🏛</span>
+    Kokand
+  </a>
+  <ul class="nav-links">
+    <li><a href="/places" data-i18n="nav_places">Joylar</a></li>
+    <li><a href="/routes" data-i18n="nav_routes">Marshrutlar</a></li>
+    <li><a href="/categories" data-i18n="nav_categories">Kategoriyalar</a></li>
+    <li><a href="/about" data-i18n="nav_about">Haqimizda</a></li>
+    <li><a href="/auth/login" class="nav-cta" data-i18n="nav_login">Kirish</a></li>
+  </ul>
+  <div class="lang-switcher">
+    <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
+    <button class="lang-btn" onclick="setLang('ru')">RU</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════ HERO ═════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge" data-i18n="hero_badge">✦ Qadimiy Farg'ona Vodiysi</div>
+    <h1>
+      <span data-i18n="hero_title1">Kokandni</span>
+      <em data-i18n="hero_title2">Kashf eting</em>
+    </h1>
+    <p data-i18n="hero_sub">Qo'qon xonligining qadimiy poytaxti — tarixi chuqur, me'morchiligi mo'jizali, mevasi barhayot shahar.</p>
+
+    <div class="hero-search">
+      <input class="hero-search-input" type="text" data-i18n-placeholder="search_placeholder" placeholder="Joy yoki marshrut qidiring..." />
+      <button class="hero-search-btn" onclick="window.location='/places'">
+        🔍 <span data-i18n="search_btn">Qidirish</span>
+      </button>
+    </div>
+
+    <div class="hero-actions" style="margin-top:20px">
+      <a href="/routes" class="btn-primary" data-i18n="hero_cta1">Marshrutlarni ko'rish →</a>
+      <a href="/places" class="btn-secondary" data-i18n="hero_cta2">Barcha joylar</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="hero-stat-number" id="stat-places">0</span>
+      <span class="hero-stat-label" data-i18n="stat_places">Tarixiy joy</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-number" id="stat-routes">0</span>
+      <span class="hero-stat-label" data-i18n="stat_routes">Tur marshrut</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-number" id="stat-reviews">0</span>
+      <span class="hero-stat-label" data-i18n="stat_reviews">Izohlar</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-number" id="stat-years">0</span>
+      <span class="hero-stat-label" data-i18n="stat_years">Yillik tarix</span>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span data-i18n="scroll_down">Pastga</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ CATEGORIES ═══════════════════ -->
+<section class="categories">
+  <div class="section-header reveal">
+    <div class="section-tag" data-i18n="cat_tag">Toifalar</div>
+    <h2 class="section-title" data-i18n="cat_title">Nima qidirayapsiz?</h2>
+    <p class="section-sub" data-i18n="cat_sub">Kokandning eng mashhur joylarini kategoriyalar bo'yicha toping.</p>
+  </div>
+  <div class="cat-grid">
+    <a href="/places?category=tarixiy" class="cat-card reveal" style="transition-delay:.05s">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Kokand_Palace.jpg/640px-Kokand_Palace.jpg" alt="Tarixiy joylar" loading="lazy"/>
+      <div class="cat-card-overlay"></div>
+      <div class="cat-card-body">
+        <div class="cat-icon">🏛</div>
+        <h3 data-i18n="cat_hist">Tarixiy joylar</h3>
+        <span>24 joy</span>
+      </div>
+    </a>
+    <a href="/places?category=masjid" class="cat-card reveal" style="transition-delay:.1s">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Juma_mosque_in_Kokand.jpg/640px-Juma_mosque_in_Kokand.jpg" alt="Masjidlar" loading="lazy"/>
+      <div class="cat-card-overlay"></div>
+      <div class="cat-card-body">
+        <div class="cat-icon">🕌</div>
+        <h3 data-i18n="cat_mosque">Masjidlar</h3>
+        <span>18 joy</span>
+      </div>
+    </a>
+    <a href="/places?category=muzey" class="cat-card reveal" style="transition-delay:.15s">
+      <img src="https://images.unsplash.com/photo-1605289982774-9a6fef564df8?w=400&q=80" alt="Muzeylar" loading="lazy"/>
+      <div class="cat-card-overlay"></div>
+      <div class="cat-card-body">
+        <div class="cat-icon">🏺</div>
+        <h3 data-i18n="cat_museum">Muzeylar</h3>
+        <span>7 joy</span>
+      </div>
+    </a>
+    <a href="/places?category=restoran" class="cat-card reveal" style="transition-delay:.2s">
+      <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80" alt="Restoranlar" loading="lazy"/>
+      <div class="cat-card-overlay"></div>
+      <div class="cat-card-body">
+        <div class="cat-icon">🍽</div>
+        <h3 data-i18n="cat_rest">Restoranlar</h3>
+        <span>41 joy</span>
+      </div>
+    </a>
+    <a href="/places?category=park" class="cat-card reveal" style="transition-delay:.25s">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80" alt="Bog'lar" loading="lazy"/>
+      <div class="cat-card-overlay"></div>
+      <div class="cat-card-body">
+        <div class="cat-icon">🌳</div>
+        <h3 data-i18n="cat_park">Bog'lar</h3>
+        <span>12 joy</span>
+      </div>
+    </a>
+    <a href="/places?category=mehmonxona" class="cat-card reveal" style="transition-delay:.3s">
+      <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=80" alt="Mehmonxonalar" loading="lazy"/>
+      <div class="cat-card-overlay"></div>
+      <div class="cat-card-body">
+        <div class="cat-icon">🏨</div>
+        <h3 data-i18n="cat_hotel">Mehmonxonalar</h3>
+        <span>15 joy</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ FEATURED PLACES ══════════════ -->
+<section class="places">
+  <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px">
+    <div class="reveal">
+      <div class="section-tag" data-i18n="places_tag">Tavsiya etiladi</div>
+      <h2 class="section-title" data-i18n="places_title">Eng mashhur joylar</h2>
+    </div>
+    <a href="/places" class="btn-primary reveal" style="transition-delay:.1s" data-i18n="places_all">Hammasini ko'rish →</a>
+  </div>
+  <div class="places-grid">
+
+    <a href="/places/xudoyar-xon-saroyi" class="place-card reveal" style="transition-delay:.05s">
+      <div class="place-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Kokand_Palace.jpg/640px-Kokand_Palace.jpg" alt="Xudoyar Xon saroyi" loading="lazy"/>
+        <div class="place-badge" data-i18n="featured">Mashhur</div>
+        <button class="place-fav" onclick="toggleFav(this,event)" aria-label="Sevimli">♡</button>
+      </div>
+      <div class="place-body">
+        <div class="place-cat" data-i18n="cat_hist_short">Tarixiy joy</div>
+        <h3>Xudoyar Xon Saroyi</h3>
+        <p data-i18n="palace_desc">XIX asrda qurilgan ulkan saroy — 113 xonasi bilan Markaziy Osiyoning eng go'zal me'moriy obidalari qatoriga kiradi.</p>
+        <div class="place-meta">
+          <div class="place-rating">
+            <span class="stars">★★★★★</span>
+            4.9 <span>(312 izoh)</span>
+          </div>
+          <span class="place-price" data-i18n="free">Bepul</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/places/juma-masjid" class="place-card reveal" style="transition-delay:.1s">
+      <div class="place-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Juma_mosque_in_Kokand.jpg/640px-Juma_mosque_in_Kokand.jpg" alt="Juma masjid" loading="lazy"/>
+        <button class="place-fav" onclick="toggleFav(this,event)" aria-label="Sevimli">♡</button>
+      </div>
+      <div class="place-body">
+        <div class="place-cat" data-i18n="cat_mosque_short">Masjid</div>
+        <h3>Juma Masjid</h3>
+        <p data-i18n="mosque_desc">99 ustunli noyob me'moriy yodgorlik. XVIII asrda bunyod etilgan bu masjid hozir ham ibodatxona sifatida faol.</p>
+        <div class="place-meta">
+          <div class="place-rating">
+            <span class="stars">★★★★★</span>
+            4.8 <span>(187 izoh)</span>
+          </div>
+          <span class="place-price" data-i18n="free">Bepul</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/places/tarixi-muzey" class="place-card reveal" style="transition-delay:.15s">
+      <div class="place-img">
+        <img src="https://images.unsplash.com/photo-1564399580075-5dfe19c205f3?w=640&q=80" alt="Tarix va madaniyat muzeyi" loading="lazy"/>
+        <button class="place-fav" onclick="toggleFav(this,event)" aria-label="Sevimli">♡</button>
+      </div>
+      <div class="place-body">
+        <div class="place-cat" data-i18n="cat_museum_short">Muzey</div>
+        <h3 data-i18n="museum_name">Tarix va Madaniyat Muzeyi</h3>
+        <p data-i18n="museum_desc">Kokandning qadimiy tarixi, hunarmandchilik va milliy madaniyatiga bag'ishlangan eng to'liq muzey.</p>
+        <div class="place-meta">
+          <div class="place-rating">
+            <span class="stars">★★★★☆</span>
+            4.5 <span>(94 izoh)</span>
+          </div>
+          <span class="place-price">10 000 UZS</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ ROUTES ═══════════════════════ -->
+<section class="routes">
+  <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px">
+    <div class="reveal">
+      <div class="section-tag" data-i18n="routes_tag">Marshrutlar</div>
+      <h2 class="section-title" data-i18n="routes_title">Tur yo'nalishlar</h2>
+    </div>
+    <a href="/routes" class="btn-primary reveal" style="transition-delay:.1s" data-i18n="routes_all">Barcha marshrutlar →</a>
+  </div>
+  <div class="routes-list">
+
+    <a href="/routes/tarixiy-markaz" class="route-card reveal">
+      <div class="route-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Kokand_Palace.jpg/640px-Kokand_Palace.jpg" alt="Tarixiy markaz turi" loading="lazy"/>
+        <span class="route-diff diff-easy" data-i18n="easy">Oson</span>
+      </div>
+      <div class="route-body">
+        <div>
+          <div class="place-cat" style="margin-bottom:6px" data-i18n="walking_tour">Piyoda tur</div>
+          <h3 data-i18n="route1_title">Tarixiy Markaz Sayohati</h3>
+          <p data-i18n="route1_desc">Kokandning eng muhim tarixiy obidalari orqali o'tadigan klassik marshrut. Saroy, masjid va eski bozorni bir kunda ziyorat qiling.</p>
+        </div>
+        <div>
+          <div class="route-chips">
+            <span class="chip"><span class="chip-icon">🕐</span> <span data-i18n="route1_dur">3 soat</span></span>
+            <span class="chip"><span class="chip-icon">📍</span> <span data-i18n="route1_dist">2.4 km</span></span>
+            <span class="chip"><span class="chip-icon">👣</span> <span data-i18n="walking">Piyoda</span></span>
+          </div>
+          <div class="route-stops">
+            <div class="stop-dot">1</div><div class="stop-line"></div>
+            <div class="stop-dot">2</div><div class="stop-line"></div>
+            <div class="stop-dot">3</div><div class="stop-line"></div>
+            <div class="stop-dot">4</div><div class="stop-line"></div>
+            <div class="stop-dot">5</div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <a href="/routes/diniy-obidalar" class="route-card reveal" style="transition-delay:.1s">
+      <div class="route-img">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Juma_mosque_in_Kokand.jpg/640px-Juma_mosque_in_Kokand.jpg" alt="Diniy obidalar" loading="lazy"/>
+        <span class="route-diff diff-moderate" data-i18n="moderate">O'rta</span>
+      </div>
+      <div class="route-body">
+        <div>
+          <div class="place-cat" style="margin-bottom:6px" data-i18n="cultural_tour">Madaniy tur</div>
+          <h3 data-i18n="route2_title">Diniy Obidalar Ziyorati</h3>
+          <p data-i18n="route2_desc">Kokandning masjid va maqbaralari bo'ylab ma'naviy sayohat. Juma masjidi, Norbutabiy madrasasi va boshqalar.</p>
+        </div>
+        <div>
+          <div class="route-chips">
+            <span class="chip"><span class="chip-icon">🕐</span> <span data-i18n="route2_dur">5 soat</span></span>
+            <span class="chip"><span class="chip-icon">📍</span> <span data-i18n="route2_dist">4.1 km</span></span>
+            <span class="chip"><span class="chip-icon">🚶</span> <span data-i18n="mixed">Aralash</span></span>
+          </div>
+          <div class="route-stops">
+            <div class="stop-dot">1</div><div class="stop-line"></div>
+            <div class="stop-dot">2</div><div class="stop-line"></div>
+            <div class="stop-dot">3</div><div class="stop-line"></div>
+            <div class="stop-dot">4</div><div class="stop-line"></div>
+            <div class="stop-dot">5</div><div class="stop-line"></div>
+            <div class="stop-dot">6</div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ MAP TEASER ════════════════════ -->
+<div class="map-section">
+  <div class="map-text">
+    <div class="reveal-left">
+      <div class="section-tag">Xarita</div>
+      <h2 class="section-title" data-i18n="map_title">Barcha joylar interaktiv xaritada</h2>
+      <p class="section-sub" data-i18n="map_sub" style="margin-bottom:32px">Kokandning barcha diqqatga sazovor joylarini xaritada ko'ring, filtrlang va marshrutingizni rejalashtiring.</p>
+      <a href="/map" class="btn-primary" data-i18n="map_btn">Xaritani ochish →</a>
+    </div>
+  </div>
+  <div class="map-visual reveal-right">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Fergana_Valley_from_space_2.jpg/640px-Fergana_Valley_from_space_2.jpg" alt="Kokand xaritasi"/>
+    <div class="map-pins">
+      <div class="map-pin" style="top:38%;left:45%" title="Xudoyar Xon saroyi">
+        <div class="pin-dot"></div>
+        <div class="pin-label">Saroy</div>
+      </div>
+      <div class="map-pin" style="top:52%;left:38%" title="Juma masjid">
+        <div class="pin-dot"></div>
+        <div class="pin-label">Masjid</div>
+      </div>
+      <div class="map-pin" style="top:30%;left:55%" title="Muzey">
+        <div class="pin-dot"></div>
+        <div class="pin-label">Muzey</div>
+      </div>
+      <div class="map-pin" style="top:60%;left:58%" title="Bozor">
+        <div class="pin-dot"></div>
+        <div class="pin-label">Bozor</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ REVIEWS ══════════════════════ -->
+<section class="reviews-section">
+  <div class="section-header reveal">
+    <div class="section-tag" data-i18n="reviews_tag">Izohlar</div>
+    <h2 class="section-title" data-i18n="reviews_title">Sayohatchilar nima deydi?</h2>
+    <p class="section-sub" data-i18n="reviews_sub">Haqiqiy sayohatchilarning tajribalari va taassurotlari.</p>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card reveal" style="transition-delay:.05s">
+      <div class="review-quote">"</div>
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text" data-i18n="review1_text">"Xudoyar Xon saroyi hayratlanarli! 113 xona — har biri alohida go'zallik. Kokand guidancesiz bu joylarni topish qiyin bo'lardi."</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">AB</div>
+        <div class="reviewer-info">
+          <h4>Azizbek Bahromov</h4>
+          <span data-i18n="tashkent_tourist">Toshkent, turist</span>
+        </div>
+      </div>
+    </div>
+    <div class="review-card reveal" style="transition-delay:.1s">
+      <div class="review-quote">"</div>
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text" data-i18n="review2_text">"Tarixiy markaz marshrutini qo'lladim — 3 soatda eng muhim joylarni ko'rdim. Eng qulay va ma'lumotli dastur!"</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">NG</div>
+        <div class="reviewer-info">
+          <h4>Nodira Gʻaniyeva</h4>
+          <span data-i18n="samarkand_tourist">Samarqand, turist</span>
+        </div>
+      </div>
+    </div>
+    <div class="review-card reveal" style="transition-delay:.15s">
+      <div class="review-quote">"</div>
+      <div class="review-stars">★★★★☆</div>
+      <p class="review-text" data-i18n="review3_text">"Ingliz tilida ham mavjud bo'lgani ajoyib. Xorijdan kelgan mehmonlarimga ham ko'rsata oldim. Very useful app!"</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">JK</div>
+        <div class="reviewer-info">
+          <h4>John Kim</h4>
+          <span data-i18n="korea_tourist">Koreya, turist</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ CTA ══════════════════════════ -->
+<div class="cta-banner">
+  <div class="cta-text reveal-left">
+    <h2 data-i18n="cta_title">Kokandni yanada chuqurroq o'rganing</h2>
+    <p data-i18n="cta_sub">Ro'yxatdan o'ting — joylarni sevimlilarga qo'shing, marshrutlar tuzing va izoh qoldiring.</p>
+  </div>
+  <a href="/auth/register" class="btn-white reveal-right" data-i18n="cta_btn">Bepul ro'yxatdan o'tish →</a>
+</div>
+
+<!-- ═══════════════════════════════════════════ FOOTER ═══════════════════════ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>🏛 Kokand Guidance</h3>
+      <p data-i18n="footer_about">Qo'qon xonligining qadimiy poytaxti — Kokandni kashf etish uchun eng to'liq raqamli gid.</p>
+      <div class="social-links">
+        <a href="#" class="social-link" aria-label="Telegram">✈</a>
+        <a href="#" class="social-link" aria-label="Instagram">📸</a>
+        <a href="#" class="social-link" aria-label="YouTube">▶</a>
+        <a href="#" class="social-link" aria-label="Facebook">f</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_nav">Navigatsiya</h4>
+      <ul>
+        <li><a href="/places" data-i18n="nav_places">Joylar</a></li>
+        <li><a href="/routes" data-i18n="nav_routes">Marshrutlar</a></li>
+        <li><a href="/categories" data-i18n="nav_categories">Kategoriyalar</a></li>
+        <li><a href="/map" data-i18n="nav_map">Xarita</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_account">Hisob</h4>
+      <ul>
+        <li><a href="/auth/login" data-i18n="nav_login">Kirish</a></li>
+        <li><a href="/auth/register" data-i18n="nav_register">Ro'yxatdan o'tish</a></li>
+        <li><a href="/favorites" data-i18n="nav_favorites">Sevimlilar</a></li>
+        <li><a href="/profile" data-i18n="nav_profile">Profil</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_info">Ma'lumot</h4>
+      <ul>
+        <li><a href="/about" data-i18n="nav_about">Haqimizda</a></li>
+        <li><a href="/contact" data-i18n="nav_contact">Aloqa</a></li>
+        <li><a href="/privacy" data-i18n="nav_privacy">Maxfiylik</a></li>
+        <li><a href="/api/v1/" data-i18n="nav_api">API</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Kokand Guidance. <span data-i18n="footer_rights">Barcha huquqlar himoyalangan.</span></span>
+    <span data-i18n="footer_made">❤️ Kokand uchun yasalgan</span>
+  </div>
+</footer>
+
+<script>
+// ─── NAVBAR SCROLL ───
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ─── SCROLL REVEAL ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+// ─── COUNTER ANIMATION ───
+function animateCounter(el, target, suffix = '') {
+  let start = 0;
+  const duration = 2000;
+  const step = 16;
+  const increment = target / (duration / step);
+  const timer = setInterval(() => {
+    start += increment;
+    if (start >= target) { start = target; clearInterval(timer); }
+    el.textContent = Math.round(start).toLocaleString() + suffix;
+  }, step);
+}
+
+const statsObserver = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    animateCounter(document.getElementById('stat-places'), 117);
+    animateCounter(document.getElementById('stat-routes'), 23);
+    animateCounter(document.getElementById('stat-reviews'), 2800, '+');
+    animateCounter(document.getElementById('stat-years'), 2500);
+    statsObserver.disconnect();
+  }
+}, { threshold: 0.5 });
+const statsBar = document.querySelector('.hero-stats');
+if (statsBar) statsObserver.observe(statsBar);
+
+// ─── FAVORITES TOGGLE ───
+function toggleFav(btn, e) {
+  e.preventDefault();
+  btn.classList.toggle('active');
+  btn.textContent = btn.classList.contains('active') ? '♥' : '♡';
+}
+
+// ─── MULTILANGUAGE ───
+const translations = {
+  uz: {
+    nav_places: 'Joylar', nav_routes: 'Marshrutlar', nav_categories: 'Kategoriyalar',
+    nav_about: 'Haqimizda', nav_login: 'Kirish',
+    hero_badge: '✦ Qadimiy Farg\'ona Vodiysi',
+    hero_title1: 'Kokandni', hero_title2: 'Kashf eting',
+    hero_sub: 'Qo\'qon xonligining qadimiy poytaxti — tarixi chuqur, me\'morchiligi mo\'jizali, mevasi barhayot shahar.',
+    search_placeholder: 'Joy yoki marshrut qidiring...', search_btn: 'Qidirish',
+    hero_cta1: 'Marshrutlarni ko\'rish →', hero_cta2: 'Barcha joylar',
+    stat_places: 'Tarixiy joy', stat_routes: 'Tur marshrut', stat_reviews: 'Izohlar', stat_years: 'Yillik tarix',
+    scroll_down: 'Pastga',
+    cat_tag: 'Toifalar', cat_title: 'Nima qidirayapsiz?', cat_sub: 'Kokandning eng mashhur joylarini kategoriyalar bo\'yicha toping.',
+    cat_hist: 'Tarixiy joylar', cat_mosque: 'Masjidlar', cat_museum: 'Muzeylar',
+    cat_rest: 'Restoranlar', cat_park: 'Bog\'lar', cat_hotel: 'Mehmonxonalar',
+    places_tag: 'Tavsiya etiladi', places_title: 'Eng mashhur joylar', places_all: 'Hammasini ko\'rish →',
+    featured: 'Mashhur', free: 'Bepul',
+    cat_hist_short: 'Tarixiy joy', cat_mosque_short: 'Masjid', cat_museum_short: 'Muzey',
+    palace_desc: 'XIX asrda qurilgan ulkan saroy — 113 xonasi bilan Markaziy Osiyoning eng go\'zal me\'moriy obidalari qatoriga kiradi.',
+    mosque_desc: '99 ustunli noyob me\'moriy yodgorlik. XVIII asrda bunyod etilgan bu masjid hozir ham ibodatxona sifatida faol.',
+    museum_name: 'Tarix va Madaniyat Muzeyi', museum_desc: 'Kokandning qadimiy tarixi, hunarmandchilik va milliy madaniyatiga bag\'ishlangan eng to\'liq muzey.',
+    routes_tag: 'Marshrutlar', routes_title: 'Tur yo\'nalishlar', routes_all: 'Barcha marshrutlar →',
+    easy: 'Oson', moderate: 'O\'rta',
+    walking_tour: 'Piyoda tur', cultural_tour: 'Madaniy tur',
+    route1_title: 'Tarixiy Markaz Sayohati', route1_desc: 'Kokandning eng muhim tarixiy obidalari orqali o\'tadigan klassik marshrut.',
+    route1_dur: '3 soat', route1_dist: '2.4 km', walking: 'Piyoda',
+    route2_title: 'Diniy Obidalar Ziyorati', route2_desc: 'Kokandning masjid va maqbaralari bo\'ylab ma\'naviy sayohat.',
+    route2_dur: '5 soat', route2_dist: '4.1 km', mixed: 'Aralash',
+    map_title: 'Barcha joylar interaktiv xaritada', map_sub: 'Kokandning barcha diqqatga sazovor joylarini xaritada ko\'ring.', map_btn: 'Xaritani ochish →',
+    reviews_tag: 'Izohlar', reviews_title: 'Sayohatchilar nima deydi?', reviews_sub: 'Haqiqiy sayohatchilarning tajribalari.',
+    review1_text: '"Xudoyar Xon saroyi hayratlanarli! Kokand guidancesiz bu joylarni topish qiyin bo\'lardi."',
+    review2_text: '"Tarixiy markaz marshrutini qo\'lladim — 3 soatda eng muhim joylarni ko\'rdim."',
+    review3_text: '"Ingliz tilida ham mavjud bo\'lgani ajoyib. Very useful app!"',
+    tashkent_tourist: 'Toshkent, turist', samarkand_tourist: 'Samarqand, turist', korea_tourist: 'Koreya, turist',
+    cta_title: 'Kokandni yanada chuqurroq o\'rganing', cta_sub: 'Ro\'yxatdan o\'ting — joylarni sevimlilarga qo\'shing.', cta_btn: 'Bepul ro\'yxatdan o\'tish →',
+    footer_about: 'Qo\'qon xonligining qadimiy poytaxti — Kokandni kashf etish uchun eng to\'liq raqamli gid.',
+    footer_nav: 'Navigatsiya', footer_account: 'Hisob', footer_info: 'Ma\'lumot',
+    nav_map: 'Xarita', nav_register: 'Ro\'yxatdan o\'tish', nav_favorites: 'Sevimlilar', nav_profile: 'Profil',
+    nav_contact: 'Aloqa', nav_privacy: 'Maxfiylik', nav_api: 'API',
+    footer_rights: 'Barcha huquqlar himoyalangan.', footer_made: '❤️ Kokand uchun yasalgan',
+  },
+  ru: {
+    nav_places: 'Места', nav_routes: 'Маршруты', nav_categories: 'Категории',
+    nav_about: 'О нас', nav_login: 'Войти',
+    hero_badge: '✦ Древняя Ферганская долина',
+    hero_title1: 'Откройте', hero_title2: 'Коканд',
+    hero_sub: 'Древняя столица Кокандского ханства — город с богатой историей, удивительной архитектурой и живой культурой.',
+    search_placeholder: 'Поиск мест или маршрутов...', search_btn: 'Поиск',
+    hero_cta1: 'Смотреть маршруты →', hero_cta2: 'Все места',
+    stat_places: 'Исторических мест', stat_routes: 'Туристических маршрутов', stat_reviews: 'Отзывов', stat_years: 'Лет истории',
+    scroll_down: 'Вниз',
+    cat_tag: 'Категории', cat_title: 'Что вы ищете?', cat_sub: 'Найдите самые известные места Коканда по категориям.',
+    cat_hist: 'Исторические места', cat_mosque: 'Мечети', cat_museum: 'Музеи',
+    cat_rest: 'Рестораны', cat_park: 'Парки', cat_hotel: 'Гостиницы',
+    places_tag: 'Рекомендуем', places_title: 'Популярные места', places_all: 'Смотреть все →',
+    featured: 'Популярно', free: 'Бесплатно',
+    cat_hist_short: 'Историческое место', cat_mosque_short: 'Мечеть', cat_museum_short: 'Музей',
+    palace_desc: 'Огромный дворец XIX века — 113 комнат, одно из красивейших архитектурных сооружений Средней Азии.',
+    mosque_desc: 'Уникальный архитектурный памятник с 99 колоннами. Построена в XVIII веке, действует по сей день.',
+    museum_name: 'Музей истории и культуры', museum_desc: 'Наиболее полный музей, посвящённый древней истории и культуре Коканда.',
+    routes_tag: 'Маршруты', routes_title: 'Туристические маршруты', routes_all: 'Все маршруты →',
+    easy: 'Лёгкий', moderate: 'Средний',
+    walking_tour: 'Пешеходный тур', cultural_tour: 'Культурный тур',
+    route1_title: 'Прогулка по историческому центру', route1_desc: 'Классический маршрут по важнейшим историческим памятникам Коканда.',
+    route1_dur: '3 часа', route1_dist: '2.4 км', walking: 'Пешком',
+    route2_title: 'Посещение религиозных объектов', route2_desc: 'Духовное путешествие по мечетям и мавзолеям Коканда.',
+    route2_dur: '5 часов', route2_dist: '4.1 км', mixed: 'Смешанный',
+    map_title: 'Все места на интерактивной карте', map_sub: 'Посмотрите все достопримечательности Коканда на карте.', map_btn: 'Открыть карту →',
+    reviews_tag: 'Отзывы', reviews_title: 'Что говорят путешественники?', reviews_sub: 'Опыт и впечатления настоящих путешественников.',
+    review1_text: '"Дворец Худаяр-хана поразителен! Без Kokand Guidance найти эти места было бы трудно."',
+    review2_text: '"Использовал маршрут исторического центра — за 3 часа увидел самые важные места."',
+    review3_text: '"Отлично, что доступно на английском. Very useful app!"',
+    tashkent_tourist: 'Ташкент, турист', samarkand_tourist: 'Самарканд, турист', korea_tourist: 'Корея, турист',
+    cta_title: 'Откройте Коканд глубже', cta_sub: 'Зарегистрируйтесь — добавляйте места в избранное и стройте маршруты.', cta_btn: 'Зарегистрироваться бесплатно →',
+    footer_about: 'Самый полный цифровой гид для исследования Коканда — древней столицы Кокандского ханства.',
+    footer_nav: 'Навигация', footer_account: 'Аккаунт', footer_info: 'Информация',
+    nav_map: 'Карта', nav_register: 'Регистрация', nav_favorites: 'Избранное', nav_profile: 'Профиль',
+    nav_contact: 'Контакты', nav_privacy: 'Конфиденциальность', nav_api: 'API',
+    footer_rights: 'Все права защищены.', footer_made: '❤️ Сделано для Коканда',
+  },
+  en: {
+    nav_places: 'Places', nav_routes: 'Routes', nav_categories: 'Categories',
+    nav_about: 'About', nav_login: 'Sign In',
+    hero_badge: '✦ Ancient Fergana Valley',
+    hero_title1: 'Discover', hero_title2: 'Kokand',
+    hero_sub: 'The ancient capital of the Kokand Khanate — a city of deep history, breathtaking architecture, and living culture.',
+    search_placeholder: 'Search places or routes...', search_btn: 'Search',
+    hero_cta1: 'Explore Routes →', hero_cta2: 'All Places',
+    stat_places: 'Historic Sites', stat_routes: 'Tour Routes', stat_reviews: 'Reviews', stat_years: 'Years of History',
+    scroll_down: 'Scroll',
+    cat_tag: 'Categories', cat_title: 'What are you looking for?', cat_sub: 'Find the most popular places in Kokand by category.',
+    cat_hist: 'Historic Sites', cat_mosque: 'Mosques', cat_museum: 'Museums',
+    cat_rest: 'Restaurants', cat_park: 'Parks', cat_hotel: 'Hotels',
+    places_tag: 'Recommended', places_title: 'Top Attractions', places_all: 'View All →',
+    featured: 'Featured', free: 'Free',
+    cat_hist_short: 'Historic Site', cat_mosque_short: 'Mosque', cat_museum_short: 'Museum',
+    palace_desc: 'A grand 19th-century palace with 113 rooms — one of Central Asia\'s most beautiful architectural masterpieces.',
+    mosque_desc: 'A unique architectural monument with 99 columns, built in the 18th century and still active today.',
+    museum_name: 'History & Culture Museum', museum_desc: 'The most comprehensive museum dedicated to Kokand\'s ancient history, crafts, and national culture.',
+    routes_tag: 'Routes', routes_title: 'Guided Tour Routes', routes_all: 'All Routes →',
+    easy: 'Easy', moderate: 'Moderate',
+    walking_tour: 'Walking Tour', cultural_tour: 'Cultural Tour',
+    route1_title: 'Historic Center Walk', route1_desc: 'A classic route through Kokand\'s most important historic landmarks.',
+    route1_dur: '3 hours', route1_dist: '2.4 km', walking: 'Walking',
+    route2_title: 'Religious Sites Tour', route2_desc: 'A spiritual journey through Kokand\'s mosques and mausoleums.',
+    route2_dur: '5 hours', route2_dist: '4.1 km', mixed: 'Mixed',
+    map_title: 'All Places on an Interactive Map', map_sub: 'Browse all Kokand attractions on the map, filter by category, and plan your route.', map_btn: 'Open Map →',
+    reviews_tag: 'Reviews', reviews_title: 'What Travelers Say', reviews_sub: 'Experiences and impressions from real travelers.',
+    review1_text: '"The Khudayar Khan Palace is breathtaking! Without Kokand Guidance, finding these places would have been difficult."',
+    review2_text: '"Used the historic center route — saw the most important sites in just 3 hours. Highly recommended!"',
+    review3_text: '"Great that it\'s available in English too. Very useful app!"',
+    tashkent_tourist: 'Tashkent, tourist', samarkand_tourist: 'Samarkand, tourist', korea_tourist: 'Korea, tourist',
+    cta_title: 'Explore Kokand in Depth', cta_sub: 'Sign up — save places to favorites, build routes, and leave reviews.', cta_btn: 'Register for Free →',
+    footer_about: 'The most complete digital guide to exploring Kokand — the ancient capital of the Kokand Khanate.',
+    footer_nav: 'Navigation', footer_account: 'Account', footer_info: 'Info',
+    nav_map: 'Map', nav_register: 'Register', nav_favorites: 'Favorites', nav_profile: 'Profile',
+    nav_contact: 'Contact', nav_privacy: 'Privacy', nav_api: 'API',
+    footer_rights: 'All rights reserved.', footer_made: '❤️ Made for Kokand',
+  }
+};
+
+let currentLang = 'uz';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase() === lang);
+  });
+  const t = translations[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (t[key]) el.placeholder = t[key];
+  });
+  document.documentElement.lang = lang;
+  localStorage.setItem('kokand_lang', lang);
+}
+
+// Init from saved preference
+const savedLang = localStorage.getItem('kokand_lang') || 'uz';
+setLang(savedLang);
+</script>
+</body>
+</html>

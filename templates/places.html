@@ -1,0 +1,970 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Joylar — Kokand{% endblock %}
+{% block meta_description %}Kokandning barcha tarixiy joylari, restoranlari, masjidlari va ko'rkam maskanlari ro'yxati.{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══ PAGE HERO ══ */
+.page-hero {
+  background: linear-gradient(135deg, var(--teal-dk) 0%, #0a2420 100%);
+  padding: 56px 5% 48px;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: .04;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l8.66 15H21.34L30 0zm0 60l-8.66-15h17.32L30 60zM0 30l15-8.66v17.32L0 30zm60 0l-15 8.66V21.34L60 30z' fill='%23C9912A'/%3E%3C/svg%3E");
+}
+.page-hero__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+}
+.page-hero__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 18px;
+}
+.page-hero__breadcrumb a { color: rgba(255,255,255,.55); transition: color .2s; }
+.page-hero__breadcrumb a:hover { color: var(--gold-lt); }
+.page-hero__breadcrumb span { color: rgba(255,255,255,.25); }
+.page-hero h1 {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+.page-hero p { font-size: 16px; color: rgba(255,255,255,.6); }
+
+/* ══ TOOLBAR ══ */
+.toolbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 5%;
+  position: sticky;
+  top: var(--nav-h);
+  z-index: 100;
+}
+.toolbar__inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 64px;
+  flex-wrap: wrap;
+}
+.toolbar__search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 200px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 16px;
+  height: 42px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.toolbar__search:focus-within {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(26,122,110,.12);
+}
+.toolbar__search-icon { font-size: 16px; color: var(--ink3); flex-shrink: 0; }
+.toolbar__search input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+}
+.toolbar__search input::placeholder { color: var(--ink3); }
+.toolbar__search-clear {
+  background: none;
+  border: none;
+  color: var(--ink3);
+  font-size: 16px;
+  padding: 0;
+  display: none;
+  cursor: pointer;
+}
+.toolbar__search-clear.visible { display: block; }
+
+.toolbar__select {
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink2);
+  cursor: pointer;
+  outline: none;
+  transition: border-color .2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%238C8070' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
+}
+.toolbar__select:focus { border-color: var(--teal); }
+
+.toolbar__count {
+  font-size: 13px;
+  color: var(--ink3);
+  white-space: nowrap;
+  margin-left: auto;
+}
+.toolbar__count strong { color: var(--ink); font-weight: 600; }
+
+/* ══ FILTER CHIPS ══ */
+.filter-chips {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 5%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.filter-chips::-webkit-scrollbar { display: none; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--ink2);
+  transition: all .2s;
+}
+.chip:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-bg); }
+.chip.active { border-color: var(--teal); background: var(--teal); color: var(--white); }
+.chip__count {
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255,255,255,.25);
+  padding: 1px 6px;
+  border-radius: 100px;
+}
+.chip.active .chip__count { background: rgba(255,255,255,.3); }
+
+/* ══ LAYOUT ══ */
+.places-page { padding: 36px 5% 72px; }
+.places-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* ══ SIDEBAR FILTERS ══ */
+.sidebar {
+  position: sticky;
+  top: calc(var(--nav-h) + 130px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.filter-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.filter-card__title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.filter-card__clear {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--teal);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background .15s;
+  font-size: 14px;
+  color: var(--ink2);
+}
+.filter-option:hover { background: var(--bg2); }
+.filter-option input[type="checkbox"],
+.filter-option input[type="radio"] {
+  width: 16px; height: 16px;
+  accent-color: var(--teal);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.filter-option .label-text { flex: 1; }
+.filter-option .label-count {
+  font-size: 12px;
+  color: var(--ink3);
+  background: var(--bg2);
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+/* Rating filter */
+.rating-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+.rating-stars { color: var(--gold); font-size: 14px; letter-spacing: 1px; }
+.rating-bar-fill {
+  flex: 1;
+  height: 6px;
+  background: var(--bg2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.rating-bar-inner { height: 100%; background: var(--gold); border-radius: 3px; }
+.rating-num { font-size: 12px; color: var(--ink3); min-width: 28px; text-align: right; }
+
+/* Price level */
+.price-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.price-option {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink3);
+  transition: all .2s;
+  background: var(--bg);
+}
+.price-option:hover { border-color: var(--teal); color: var(--teal); }
+.price-option.active {
+  border-color: var(--teal);
+  background: var(--teal);
+  color: var(--white);
+}
+.price-option .price-sym { display: block; font-size: 18px; margin-bottom: 2px; }
+.price-option .price-lbl { font-size: 11px; font-weight: 400; }
+
+/* ══ PLACES GRID ══ */
+.places-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+.places-grid--list {
+  grid-template-columns: 1fr;
+}
+
+/* PLACE CARD */
+.place-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: transform .3s, box-shadow .3s;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+.place-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+
+.places-grid--list .place-card {
+  flex-direction: row;
+  height: 160px;
+}
+
+.place-card__img {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.places-grid--list .place-card__img { width: 240px; height: 100%; }
+
+.place-card__img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .5s;
+}
+.place-card:hover .place-card__img img { transform: scale(1.06); }
+
+.place-card__no-img {
+  width: 100%; height: 100%;
+  background: var(--bg2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+.place-card__badge {
+  position: absolute;
+  top: 12px; left: 12px;
+  background: var(--gold);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+.place-card__fav {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.9);
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(8px);
+  transition: transform .2s, background .2s;
+  z-index: 1;
+}
+.place-card__fav:hover { transform: scale(1.18); background: var(--white); }
+.place-card__fav.is-active { color: #e74c3c; }
+
+.place-card__body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.place-card__cat {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--teal);
+  margin-bottom: 6px;
+}
+.place-card__title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+  margin-bottom: 6px;
+}
+.place-card__desc {
+  font-size: 13px;
+  color: var(--ink3);
+  line-height: 1.55;
+  flex: 1;
+  margin-bottom: 14px;
+}
+.place-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.place-card__rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.place-card__rating .stars { color: var(--gold); }
+.place-card__rating small { font-weight: 400; color: var(--ink3); }
+.place-card__price {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teal);
+  background: var(--teal-bg);
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+/* Tags */
+.place-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.tag {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink3);
+  background: var(--bg2);
+  padding: 3px 8px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+}
+
+/* ══ EMPTY STATE ══ */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 20px;
+}
+.empty-state__icon { font-size: 56px; margin-bottom: 20px; }
+.empty-state h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.empty-state p { font-size: 15px; color: var(--ink3); margin-bottom: 24px; }
+
+/* ══ PAGINATION ══ */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 48px;
+}
+.page-btn {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.page-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-bg); }
+.page-btn.active { background: var(--teal); border-color: var(--teal); color: var(--white); }
+.page-btn:disabled { opacity: .4; cursor: not-allowed; }
+.page-dots { color: var(--ink3); padding: 0 4px; }
+
+/* ══ VIEW TOGGLE ══ */
+.view-toggle {
+  display: flex;
+  background: var(--bg2);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  border: 1px solid var(--border);
+}
+.view-btn {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  color: var(--ink3);
+  transition: all .2s;
+}
+.view-btn.active { background: var(--white); color: var(--ink); box-shadow: var(--shadow-sm); }
+
+/* ══ LOADING SPINNER ══ */
+.spinner-wrap {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  padding: 60px;
+}
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ══ MAP TOGGLE BTN ══ */
+.map-toggle-btn {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ink);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 8px 32px rgba(0,0,0,.25);
+  border: none;
+  cursor: pointer;
+  transition: transform .2s, background .2s;
+}
+.map-toggle-btn:hover { background: var(--teal-dk); transform: translateX(-50%) translateY(-2px); }
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 900px) {
+  .places-layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; display: none; }
+  .sidebar.mobile-open { display: flex; }
+}
+@media (max-width: 600px) {
+  .places-grid { grid-template-columns: 1fr; }
+  .places-grid--list .place-card { flex-direction: column; height: auto; }
+  .places-grid--list .place-card__img { width: 100%; height: 180px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══ PAGE HERO ═══ -->
+<div class="page-hero">
+  <div class="page-hero__inner">
+    <div class="page-hero__breadcrumb">
+      <a href="/">Bosh sahifa</a>
+      <span>›</span>
+      <span>Joylar</span>
+    </div>
+    <h1>Barcha Joylar</h1>
+    <p>Kokandning <strong id="totalCount" style="color:var(--gold-lt)">...</strong> ta diqqatga sazovor joyi</p>
+  </div>
+</div>
+
+<!-- ═══ TOOLBAR ═══ -->
+<div class="toolbar">
+  <div class="toolbar__inner">
+    <div class="toolbar__search">
+      <span class="toolbar__search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Joy nomi, manzil, teg..." autocomplete="off"/>
+      <button class="toolbar__search-clear" id="searchClear" onclick="clearSearch()" aria-label="Tozalash">✕</button>
+    </div>
+
+    <select class="toolbar__select" id="orderingSelect" onchange="applyFilters()">
+      <option value="-is_featured,-created_at">Tavsiya etilgan</option>
+      <option value="-average_rating">Reyting bo'yicha</option>
+      <option value="-view_count">Ommabop</option>
+      <option value="title">Nom bo'yicha</option>
+      <option value="created_at">Yangi</option>
+    </select>
+
+    <div class="view-toggle">
+      <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')" title="Kartochka ko'rinish">⊞</button>
+      <button class="view-btn" id="listViewBtn" onclick="setView('list')" title="Ro'yxat ko'rinish">☰</button>
+    </div>
+
+    <span class="toolbar__count">
+      <strong id="resultCount">0</strong> ta natija
+    </span>
+  </div>
+</div>
+
+<!-- ═══ CATEGORY CHIPS ═══ -->
+<div class="filter-chips" id="categoryChips">
+  <button class="chip active" data-cat="" onclick="selectCategory(this, '')">
+    Hammasi
+  </button>
+  <!-- JS tomonidan to'ldiriladi -->
+</div>
+
+<!-- ═══ MAIN LAYOUT ═══ -->
+<div class="places-page">
+  <div class="places-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+      <!-- Price filter -->
+      <div class="filter-card">
+        <div class="filter-card__title">
+          Narx darajasi
+          <button class="filter-card__clear" onclick="clearFilter('price')">Tozalash</button>
+        </div>
+        <div class="price-grid">
+          <div class="price-option" data-price="0" onclick="togglePrice(this, 0)">
+            <span class="price-sym">🆓</span>
+            <span class="price-lbl">Bepul</span>
+          </div>
+          <div class="price-option" data-price="1" onclick="togglePrice(this, 1)">
+            <span class="price-sym">₩</span>
+            <span class="price-lbl">Arzon</span>
+          </div>
+          <div class="price-option" data-price="2" onclick="togglePrice(this, 2)">
+            <span class="price-sym">₩₩</span>
+            <span class="price-lbl">O'rta</span>
+          </div>
+          <div class="price-option" data-price="3" onclick="togglePrice(this, 3)">
+            <span class="price-sym">₩₩₩</span>
+            <span class="price-lbl">Qimmat</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rating filter -->
+      <div class="filter-card">
+        <div class="filter-card__title">
+          Minimal reyting
+          <button class="filter-card__clear" onclick="clearFilter('rating')">Tozalash</button>
+        </div>
+        <div id="ratingBars">
+          <!-- JS to'ldiradi -->
+        </div>
+      </div>
+
+      <!-- Featured -->
+      <div class="filter-card">
+        <div class="filter-card__title">Qo'shimcha</div>
+        <label class="filter-option">
+          <input type="checkbox" id="featuredOnly" onchange="applyFilters()"/>
+          <span class="label-text">Faqat mashhurlar</span>
+        </label>
+      </div>
+
+    </aside>
+
+    <!-- GRID -->
+    <div>
+      <div class="places-grid" id="placesGrid">
+        <!-- Skeleton -->
+        <div class="skeleton skeleton--card"></div>
+        <div class="skeleton skeleton--card"></div>
+        <div class="skeleton skeleton--card"></div>
+        <div class="skeleton skeleton--card"></div>
+        <div class="skeleton skeleton--card"></div>
+        <div class="skeleton skeleton--card"></div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Fixed map toggle -->
+<button class="map-toggle-btn" onclick="window.location='/map/'">
+  🗺 Xaritada ko'rish
+</button>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* ═══════════════════════════════════════════════════════════
+   PLACES LIST PAGE — JavaScript
+═══════════════════════════════════════════════════════════ */
+
+const API_BASE   = '/api/v1';
+const PAGE_SIZE  = 12;
+
+let state = {
+  search:    '',
+  category:  '',
+  ordering:  '-is_featured,-created_at',
+  priceLevel: null,
+  minRating: null,
+  featured:  false,
+  page:      1,
+  totalPages: 1,
+  view:      localStorage.getItem('places_view') || 'grid',
+};
+
+/* ── INIT ── */
+async function init() {
+  await loadCategories();
+  buildRatingBars();
+  restoreUrlParams();
+  setView(state.view, false);
+  await loadPlaces();
+
+  // Search debounce
+  let debounce;
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    state.search = e.target.value.trim();
+    document.getElementById('searchClear').classList.toggle('visible', !!state.search);
+    clearTimeout(debounce);
+    debounce = setTimeout(() => { state.page = 1; loadPlaces(); }, 380);
+  });
+}
+
+/* ── LOAD CATEGORIES ── */
+async function loadCategories() {
+  try {
+    const res  = await fetch(`${API_BASE}/categories/`);
+    const data = await res.json();
+    const chips = document.getElementById('categoryChips');
+
+    data.results?.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.dataset.cat = cat.slug;
+      btn.onclick = () => selectCategory(btn, cat.slug);
+      btn.innerHTML = `${cat.title} <span class="chip__count">${cat.place_count}</span>`;
+      chips.appendChild(btn);
+    });
+  } catch { /* silently fail */ }
+}
+
+/* ── LOAD PLACES ── */
+async function loadPlaces() {
+  const grid = document.getElementById('placesGrid');
+  grid.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div></div>`;
+
+  const params = new URLSearchParams({
+    page:     state.page,
+    page_size: PAGE_SIZE,
+    ordering: state.ordering,
+  });
+  if (state.search)    params.set('search', state.search);
+  if (state.category)  params.set('category__slug', state.category);
+  if (state.priceLevel !== null) params.set('price_level', state.priceLevel);
+  if (state.featured)  params.set('is_featured', 'true');
+
+  try {
+    const res  = await fetch(`${API_BASE}/places/?${params}`);
+    const data = await res.json();
+
+    const count = data.count ?? 0;
+    document.getElementById('totalCount').textContent = count;
+    document.getElementById('resultCount').textContent = count;
+
+    state.totalPages = Math.ceil(count / PAGE_SIZE);
+    renderPlaces(data.results ?? []);
+    renderPagination();
+    updateUrl();
+  } catch {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-state__icon">⚠️</div><h3>Xatolik yuz berdi</h3><p>Iltimos, qayta urinib ko'ring.</p></div>`;
+  }
+}
+
+/* ── RENDER PLACES ── */
+function renderPlaces(places) {
+  const grid = document.getElementById('placesGrid');
+  grid.className = `places-grid${state.view === 'list' ? ' places-grid--list' : ''}`;
+
+  if (!places.length) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state__icon">🔍</div>
+        <h3>Joy topilmadi</h3>
+        <p>Filtrlarni o'zgartiring yoki boshqa kalit so'z kiriting.</p>
+        <button class="btn btn--secondary" onclick="resetFilters()">Filtrlarni tozalash</button>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = places.map(p => {
+    const stars    = '★'.repeat(Math.round(p.average_rating)) + '☆'.repeat(5 - Math.round(p.average_rating));
+    const imgHtml  = p.main_image
+      ? `<img src="${p.main_image}" alt="${p.title}" loading="lazy"/>`
+      : `<div class="place-card__no-img">🏛</div>`;
+    const tags     = (p.tags || []).slice(0, 3).map(t => `<span class="tag">${t.name}</span>`).join('');
+    const price    = p.price_level === 0 ? 'Bepul' : p.price_level_display;
+    const favIcon  = p.is_favorited ? '♥' : '♡';
+    const favClass = p.is_favorited ? 'is-active' : '';
+
+    return `
+    <a href="/places/${p.slug}/" class="place-card reveal">
+      <div class="place-card__img">
+        ${imgHtml}
+        ${p.is_featured ? '<span class="place-card__badge">Mashhur</span>' : ''}
+        <button class="place-card__fav js-fav-btn ${favClass}"
+                data-place-id="${p.id}"
+                aria-label="Sevimlilarga qo'shish"
+                onclick="event.preventDefault()">
+          ${favIcon}
+        </button>
+      </div>
+      <div class="place-card__body">
+        <div class="place-card__cat">${p.category?.title || ''}</div>
+        <h3 class="place-card__title">${p.title}</h3>
+        <p class="place-card__desc">${(p.short_description || '').slice(0, 90)}${p.short_description?.length > 90 ? '...' : ''}</p>
+        ${tags ? `<div class="place-card__tags">${tags}</div>` : ''}
+        <div class="place-card__meta">
+          <div class="place-card__rating">
+            <span class="stars">${stars}</span>
+            ${Number(p.average_rating).toFixed(1)}
+            <small>(${p.review_count})</small>
+          </div>
+          <span class="place-card__price">${price}</span>
+        </div>
+      </div>
+    </a>`;
+  }).join('');
+
+  // Trigger scroll reveal for new cards
+  document.querySelectorAll('.place-card.reveal').forEach(el => {
+    setTimeout(() => el.classList.add('visible'), 50);
+  });
+}
+
+/* ── RENDER PAGINATION ── */
+function renderPagination() {
+  const pag = document.getElementById('pagination');
+  if (state.totalPages <= 1) { pag.innerHTML = ''; return; }
+
+  let html = '';
+  html += `<button class="page-btn" onclick="goPage(${state.page - 1})" ${state.page === 1 ? 'disabled' : ''}>‹</button>`;
+
+  const range = pageRange(state.page, state.totalPages);
+  range.forEach(p => {
+    if (p === '...') {
+      html += `<span class="page-dots">…</span>`;
+    } else {
+      html += `<button class="page-btn ${p === state.page ? 'active' : ''}" onclick="goPage(${p})">${p}</button>`;
+    }
+  });
+
+  html += `<button class="page-btn" onclick="goPage(${state.page + 1})" ${state.page === state.totalPages ? 'disabled' : ''}>›</button>`;
+  pag.innerHTML = html;
+}
+
+function pageRange(current, total) {
+  if (total <= 7) return Array.from({length: total}, (_, i) => i + 1);
+  if (current <= 4) return [1,2,3,4,5,'...',total];
+  if (current >= total - 3) return [1,'...',total-4,total-3,total-2,total-1,total];
+  return [1,'...',current-1,current,current+1,'...',total];
+}
+
+/* ── RATING BARS ── */
+function buildRatingBars() {
+  const ratings = [5, 4, 3, 2, 1];
+  const counts  = [45, 30, 15, 7, 3]; // placeholder percentages
+  document.getElementById('ratingBars').innerHTML = ratings.map((r, i) => `
+    <div class="rating-bar" onclick="setMinRating(${r})" style="cursor:pointer" title="${r}+ yulduz">
+      <span class="rating-stars">${'★'.repeat(r)}</span>
+      <div class="rating-bar-fill">
+        <div class="rating-bar-inner" style="width:${counts[i]}%"></div>
+      </div>
+      <span class="rating-num">${r}+</span>
+    </div>`).join('');
+}
+
+/* ── ACTIONS ── */
+function selectCategory(btn, slug) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  state.category = slug;
+  state.page = 1;
+  loadPlaces();
+}
+
+function togglePrice(el, level) {
+  if (el.classList.contains('active')) {
+    el.classList.remove('active');
+    state.priceLevel = null;
+  } else {
+    document.querySelectorAll('.price-option').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    state.priceLevel = level;
+  }
+  state.page = 1;
+  loadPlaces();
+}
+
+function setMinRating(r) {
+  state.minRating = r;
+  state.page = 1;
+  loadPlaces();
+}
+
+function applyFilters() {
+  state.ordering = document.getElementById('orderingSelect').value;
+  state.featured = document.getElementById('featuredOnly').checked;
+  state.page = 1;
+  loadPlaces();
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').classList.remove('visible');
+  state.search = '';
+  state.page = 1;
+  loadPlaces();
+}
+
+function clearFilter(type) {
+  if (type === 'price') {
+    document.querySelectorAll('.price-option').forEach(p => p.classList.remove('active'));
+    state.priceLevel = null;
+  }
+  if (type === 'rating') { state.minRating = null; }
+  state.page = 1;
+  loadPlaces();
+}
+
+function resetFilters() {
+  state = { ...state, search:'', category:'', priceLevel:null, minRating:null, featured:false, page:1 };
+  document.getElementById('searchInput').value = '';
+  document.getElementById('featuredOnly').checked = false;
+  document.querySelectorAll('.price-option').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.chip').forEach((c, i) => c.classList.toggle('active', i === 0));
+  loadPlaces();
+}
+
+function goPage(p) {
+  if (p < 1 || p > state.totalPages) return;
+  state.page = p;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  loadPlaces();
+}
+
+function setView(v, save = true) {
+  state.view = v;
+  if (save) localStorage.setItem('places_view', v);
+  document.getElementById('gridViewBtn').classList.toggle('active', v === 'grid');
+  document.getElementById('listViewBtn').classList.toggle('active', v === 'list');
+  document.getElementById('placesGrid').className = `places-grid${v === 'list' ? ' places-grid--list' : ''}`;
+}
+
+/* ── URL SYNC ── */
+function updateUrl() {
+  const p = new URLSearchParams();
+  if (state.search)   p.set('q', state.search);
+  if (state.category) p.set('cat', state.category);
+  if (state.page > 1) p.set('page', state.page);
+  history.replaceState({}, '', `${window.location.pathname}${p.toString() ? '?' + p : ''}`);
+}
+
+function restoreUrlParams() {
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('q'))    { state.search = p.get('q'); document.getElementById('searchInput').value = state.search; }
+  if (p.get('cat'))  { state.category = p.get('cat'); }
+  if (p.get('page')) { state.page = parseInt(p.get('page')) || 1; }
+}
+
+init();
+</script>
+{% endblock %}

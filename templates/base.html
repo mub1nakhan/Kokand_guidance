@@ -1,0 +1,905 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz" id="htmlRoot">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="{% block meta_description %}Kokand — Qo'qon xonligining qadimiy poytaxti. Tarixiy joylar, marshrutlar va gid.{% endblock %}"/>
+<meta name="keywords" content="{% block meta_keywords %}Kokand, Qo'qon, turizm, tarix, sayohat{% endblock %}"/>
+<title>{% block title %}Kokand Guidance{% endblock %}</title>
+
+<meta property="og:title"       content="{% block og_title %}Kokand Guidance{% endblock %}"/>
+<meta property="og:description" content="{% block og_description %}Kokandni kashf eting{% endblock %}"/>
+<meta property="og:image"       content="{% block og_image %}/static/img/og-default.jpg{% endblock %}"/>
+<meta property="og:type"        content="website"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+   ║                        KOKAND GUIDANCE — BASE CSS                       ║
+   ╚══════════════════════════════════════════════════════════════════════════╝ */
+
+/* ─────────────────────────── DESIGN TOKENS ─────────────────────────── */
+:root {
+  --gold:       #C9912A;
+  --gold-lt:    #F0D080;
+  --gold-dk:    #7A5410;
+  --gold-bg:    rgba(201,145,42,.08);
+  --teal:       #1A7A6E;
+  --teal-lt:    #A8D8D2;
+  --teal-dk:    #0E4740;
+  --teal-bg:    rgba(26,122,110,.08);
+  --bg:         #FAF7F2;
+  --bg2:        #F2EDE3;
+  --bg3:        #EAE3D6;
+  --ink:        #1C1A16;
+  --ink2:       #4A4438;
+  --ink3:       #8C8070;
+  --white:      #FFFFFF;
+  --border:     #E4DDD2;
+  --shadow-sm:  0 2px 12px rgba(28,26,22,.07);
+  --shadow:     0 8px 40px rgba(28,26,22,.10);
+  --shadow-lg:  0 20px 60px rgba(28,26,22,.15);
+  --radius-sm:  8px;
+  --radius:     12px;
+  --radius-lg:  18px;
+  --nav-h:      72px;
+  --transition: .25s cubic-bezier(.4,0,.2,1);
+}
+
+/* ─────────────────────────── RESET ─────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  overflow-x: hidden;
+  padding-top: var(--nav-h);
+}
+body.page--home { padding-top: 0; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+button { font-family: inherit; cursor: pointer; }
+input, textarea, select { font-family: inherit; }
+
+/* ─────────────────────────── TYPOGRAPHY ─────────────────────────── */
+.font-display { font-family: 'Playfair Display', serif; }
+h1,h2,h3,h4,h5 { font-family: 'Playfair Display', serif; line-height: 1.2; color: var(--ink); }
+
+/* ─────────────────────────── BUTTONS ─────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn--primary {
+  background: var(--gold);
+  color: var(--white);
+  box-shadow: 0 4px 20px rgba(201,145,42,.30);
+}
+.btn--primary:hover { background: var(--gold-dk); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,145,42,.40); }
+.btn--secondary { background: var(--bg2); color: var(--ink2); border: 1px solid var(--border); }
+.btn--secondary:hover { background: var(--bg3); transform: translateY(-1px); }
+.btn--ghost { background: rgba(255,255,255,.12); color: var(--white); border: 1px solid rgba(255,255,255,.25); backdrop-filter: blur(8px); }
+.btn--ghost:hover { background: rgba(255,255,255,.22); transform: translateY(-1px); }
+.btn--teal { background: var(--teal); color: var(--white); }
+.btn--teal:hover { background: var(--teal-dk); transform: translateY(-1px); }
+.btn--white { background: var(--white); color: var(--gold-dk); font-weight: 700; box-shadow: 0 4px 16px rgba(0,0,0,.10); }
+.btn--white:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.15); }
+.btn--sm { padding: 9px 20px; font-size: 14px; }
+.btn--lg { padding: 16px 36px; font-size: 17px; }
+
+/* ─────────────────────────── FLASH MESSAGES ─────────────────────────── */
+.flash-messages {
+  position: fixed;
+  top: calc(var(--nav-h) + 12px);
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 360px;
+}
+.flash {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  background: var(--white);
+  border-left: 4px solid var(--ink3);
+  box-shadow: var(--shadow);
+  animation: flashIn .3s ease;
+}
+@keyframes flashIn { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform:none; } }
+.flash--success { border-color: var(--teal); color: var(--teal-dk); }
+.flash--error, .flash--danger { border-color: #c0392b; color: #7b241c; }
+.flash--warning { border-color: var(--gold); color: var(--gold-dk); }
+.flash button { background: none; border: none; font-size: 18px; color: var(--ink3); line-height: 1; padding: 0; }
+
+/* ─────────────────────────── SECTION HELPERS ─────────────────────────── */
+.section { padding: 88px 5%; }
+.section--sm { padding: 56px 5%; }
+.bg--white { background: var(--white); }
+.bg--light  { background: var(--bg); }
+.bg--teal   { background: var(--teal-dk); }
+.section__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 14px;
+}
+.section__tag::before { content:''; width:24px; height:2px; background: var(--teal); border-radius:2px; display:inline-block; }
+.section__title { font-size: clamp(28px,3.5vw,44px); font-weight: 700; color: var(--ink); margin-bottom: 12px; }
+.section__sub { font-size: 17px; color: var(--ink3); line-height: 1.7; max-width: 540px; }
+.section__header { margin-bottom: 48px; }
+.section__header--flex { display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px; margin-bottom:48px; }
+
+/* ─────────────────────────── SKELETON ─────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg2) 25%, var(--bg3) 50%, var(--bg2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: var(--radius);
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.skeleton--card { height: 340px; }
+.skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 24px; }
+
+/* ─────────────────────────── SCROLL REVEAL ─────────────────────────── */
+.reveal, .reveal-left, .reveal-right {
+  opacity: 0;
+  transition: opacity .65s ease, transform .65s ease;
+}
+.reveal       { transform: translateY(32px); }
+.reveal-left  { transform: translateX(-40px); }
+.reveal-right { transform: translateX(40px); }
+.reveal.visible, .reveal-left.visible, .reveal-right.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════════════════════════════════════════ */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 900;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+  gap: 24px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+/* Transparent mode — faqat home hero ustida */
+.navbar--transparent {
+  background: transparent;
+  border-bottom-color: transparent;
+  box-shadow: none;
+}
+.navbar--scrolled {
+  background: rgba(250,247,242,.96) !important;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 2px 24px rgba(28,26,22,.08);
+  border-bottom-color: var(--border) !important;
+}
+
+/* Logo */
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  flex-shrink: 0;
+  transition: color var(--transition);
+}
+.navbar--transparent .navbar__logo { color: var(--white); }
+.navbar--scrolled .navbar__logo   { color: var(--ink) !important; }
+.navbar__logo-icon {
+  width: 38px; height: 38px;
+  background: var(--gold);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* Nav links */
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  justify-content: center;
+}
+.navbar__links > li > a {
+  display: inline-flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink2);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition), background var(--transition);
+  position: relative;
+}
+.navbar--transparent .navbar__links > li > a { color: rgba(255,255,255,.88); }
+.navbar--scrolled .navbar__links > li > a    { color: var(--ink2) !important; }
+.navbar__links > li > a:hover,
+.navbar__links > li > a.active {
+  color: var(--gold);
+  background: var(--gold-bg);
+}
+.navbar--transparent .navbar__links > li > a:hover { color: var(--gold-lt); background: rgba(255,255,255,.1); }
+
+/* CTA link */
+.navbar__cta {
+  background: var(--gold) !important;
+  color: var(--white) !important;
+  padding: 8px 18px !important;
+  border-radius: var(--radius-sm) !important;
+  font-weight: 600 !important;
+}
+.navbar__cta:hover { background: var(--gold-dk) !important; }
+
+/* User dropdown */
+.navbar__dropdown { position: relative; }
+.navbar__user-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink2);
+  background: none;
+  border: 1px solid var(--border);
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+.navbar__user-btn:hover { background: var(--bg2); border-color: var(--ink3); }
+.navbar--transparent .navbar__user-btn { color: rgba(255,255,255,.9); border-color: rgba(255,255,255,.3); }
+.navbar__dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity var(--transition), transform var(--transition);
+}
+.navbar__dropdown:hover .navbar__dropdown-menu,
+.navbar__dropdown.open  .navbar__dropdown-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+.navbar__dropdown-menu li a {
+  display: block;
+  padding: 9px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink2);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition), color var(--transition);
+}
+.navbar__dropdown-menu li a:hover { background: var(--bg2); color: var(--ink); }
+.navbar__dropdown-menu .divider { height: 1px; background: var(--border); margin: 6px 0; }
+
+/* Language switcher */
+.lang-switcher {
+  display: flex;
+  gap: 2px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  flex-shrink: 0;
+}
+.navbar--transparent .lang-switcher { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.2); }
+.lang-btn {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: 5px 10px;
+  border-radius: 6px;
+  color: var(--ink3);
+  transition: var(--transition);
+}
+.navbar--transparent .lang-btn { color: rgba(255,255,255,.65); }
+.lang-btn.active, .lang-btn:hover {
+  background: var(--gold);
+  color: var(--white) !important;
+}
+
+/* Burger — mobile */
+.navbar__burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px; height: 40px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  flex-shrink: 0;
+}
+.navbar__burger span {
+  display: block;
+  height: 2px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+.navbar--transparent .navbar__burger span { background: var(--white); }
+.navbar__burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.navbar__burger.open span:nth-child(2) { opacity: 0; }
+.navbar__burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile drawer */
+.navbar__mobile {
+  display: none;
+  position: fixed;
+  top: var(--nav-h);
+  left: 0; right: 0;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 16px 5%;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 899;
+  animation: drawerDown .2s ease;
+}
+@keyframes drawerDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:none} }
+.navbar__mobile.open { display: flex; }
+.navbar__mobile a {
+  display: block;
+  padding: 12px 14px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink2);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition);
+}
+.navbar__mobile a:hover { background: var(--bg2); color: var(--ink); }
+.navbar__mobile .divider { height: 1px; background: var(--border); margin: 8px 0; }
+.navbar__mobile .lang-row { display: flex; gap: 8px; padding: 4px 14px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════════════════════ */
+.footer {
+  background: var(--ink);
+  color: rgba(255,255,255,.6);
+  padding: 72px 5% 32px;
+}
+.footer__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 56px;
+}
+.footer__brand h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+.footer__brand p {
+  font-size: 14px;
+  line-height: 1.75;
+  margin-bottom: 24px;
+  max-width: 280px;
+}
+.footer__socials { display: flex; gap: 10px; }
+.footer__social {
+  width: 38px; height: 38px;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: rgba(255,255,255,.55);
+  transition: var(--transition);
+}
+.footer__social:hover { background: var(--gold); color: var(--white); border-color: var(--gold); }
+.footer__col h4 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--white);
+  margin-bottom: 18px;
+}
+.footer__col ul { display: flex; flex-direction: column; gap: 10px; }
+.footer__col a {
+  font-size: 14px;
+  color: rgba(255,255,255,.5);
+  transition: color var(--transition);
+}
+.footer__col a:hover { color: var(--gold-lt); }
+.footer__bottom {
+  padding-top: 28px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  color: rgba(255,255,255,.3);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .footer__grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+  .footer__brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 768px) {
+  :root { --nav-h: 64px; }
+  .navbar__links, .lang-switcher { display: none; }
+  .navbar__burger { display: flex; }
+  .section { padding: 64px 5%; }
+  .footer__grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+  .footer__brand { grid-column: 1 / -1; }
+  .footer__bottom { justify-content: center; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .footer__grid { grid-template-columns: 1fr; }
+}
+</style>
+
+{% block extra_css %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════════════════════════════════════════ -->
+<nav class="navbar {% block navbar_class %}{% endblock %}" id="navbar">
+
+  <a href="/" class="navbar__logo">
+    <span class="navbar__logo-icon">🏛</span>
+    Kokand
+  </a>
+
+  <!-- Desktop links -->
+  <ul class="navbar__links">
+    <li>
+      <a href="/places/"
+         class="{% if request.resolver_match.url_name == 'place-list-page' %}active{% endif %}">
+        Joylar
+      </a>
+    </li>
+    <li>
+      <a href="/routes/"
+         class="{% if request.resolver_match.url_name == 'route-list-page' %}active{% endif %}">
+        Marshrutlar
+      </a>
+    </li>
+    <li>
+      <a href="/categories/"
+         class="{% if request.resolver_match.url_name == 'category-list-page' %}active{% endif %}">
+        Kategoriyalar
+      </a>
+    </li>
+    <li>
+      <a href="/map/"
+         class="{% if request.resolver_match.url_name == 'map-page' %}active{% endif %}">
+        Xarita
+      </a>
+    </li>
+
+    {% if user.is_authenticated %}
+      <li class="navbar__dropdown">
+        <button class="navbar__user-btn" aria-haspopup="true" aria-expanded="false" id="userMenuBtn">
+          {{ user.display_name }} ▾
+        </button>
+        <ul class="navbar__dropdown-menu" role="menu">
+          <li><a href="/profile/" role="menuitem">Profilim</a></li>
+          <li><a href="/favorites/" role="menuitem">Sevimlilar</a></li>
+          <li class="divider" role="separator"></li>
+          <li><a href="#" role="menuitem" onclick="authLogout(event)">Chiqish</a></li>
+        </ul>
+      </li>
+    {% else %}
+      <li><a href="/auth/register/" class="navbar__cta">Ro'yxatdan o'tish</a></li>
+      <li><a href="/auth/login/">Kirish</a></li>
+    {% endif %}
+  </ul>
+
+  <!-- Language switcher -->
+  <div class="lang-switcher" role="group" aria-label="Til tanlash">
+    <button class="lang-btn" onclick="setLang('uz')" aria-label="O'zbekcha">UZ</button>
+    <button class="lang-btn" onclick="setLang('ru')" aria-label="Ruscha">RU</button>
+    <button class="lang-btn" onclick="setLang('en')" aria-label="English">EN</button>
+  </div>
+
+  <!-- Mobile burger -->
+  <button class="navbar__burger" id="navBurger"
+          aria-label="Menyuni ochish" aria-expanded="false" aria-controls="mobileMenu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="navbar__mobile" id="mobileMenu" role="navigation" aria-label="Mobil menyu">
+  <a href="/places/">Joylar</a>
+  <a href="/routes/">Marshrutlar</a>
+  <a href="/categories/">Kategoriyalar</a>
+  <a href="/map/">Xarita</a>
+  <div class="divider"></div>
+  {% if user.is_authenticated %}
+    <a href="/profile/">Profilim</a>
+    <a href="/favorites/">Sevimlilar</a>
+    <a href="#" onclick="authLogout(event)">Chiqish</a>
+  {% else %}
+    <a href="/auth/register/">Ro'yxatdan o'tish</a>
+    <a href="/auth/login/">Kirish</a>
+  {% endif %}
+  <div class="divider"></div>
+  <div class="lang-row">
+    <button class="lang-btn" onclick="setLang('uz')">UZ</button>
+    <button class="lang-btn" onclick="setLang('ru')">RU</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FLASH MESSAGES
+══════════════════════════════════════════════════════════════════════════ -->
+{% if messages %}
+<div class="flash-messages" id="flashMessages" role="alert" aria-live="polite">
+  {% for msg in messages %}
+  <div class="flash flash--{{ msg.tags }}">
+    <span>{{ msg }}</span>
+    <button onclick="this.closest('.flash').remove()" aria-label="Yopish">✕</button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════════════════════════════════════ -->
+<main id="main-content">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer__grid">
+
+    <!-- Brand -->
+    <div class="footer__brand reveal-left">
+      <h3>🏛 Kokand Guidance</h3>
+      <p>Qo'qon xonligining qadimiy poytaxti — Kokandni kashf etish uchun eng to'liq raqamli gid.</p>
+      <div class="footer__socials">
+        <a href="#" class="footer__social" aria-label="Telegram">✈</a>
+        <a href="#" class="footer__social" aria-label="Instagram">📸</a>
+        <a href="#" class="footer__social" aria-label="YouTube">▶</a>
+        <a href="#" class="footer__social" aria-label="Facebook">f</a>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="footer__col reveal" style="transition-delay:.05s">
+      <h4>Navigatsiya</h4>
+      <ul>
+        <li><a href="/places/">Joylar</a></li>
+        <li><a href="/routes/">Marshrutlar</a></li>
+        <li><a href="/categories/">Kategoriyalar</a></li>
+        <li><a href="/map/">Xarita</a></li>
+      </ul>
+    </div>
+
+    <!-- Account -->
+    <div class="footer__col reveal" style="transition-delay:.1s">
+      <h4>Hisob</h4>
+      <ul>
+        {% if user.is_authenticated %}
+          <li><a href="/profile/">Profilim</a></li>
+          <li><a href="/favorites/">Sevimlilar</a></li>
+          <li><a href="#" onclick="authLogout(event)">Chiqish</a></li>
+        {% else %}
+          <li><a href="/auth/login/">Kirish</a></li>
+          <li><a href="/auth/register/">Ro'yxatdan o'tish</a></li>
+          <li><a href="/favorites/">Sevimlilar</a></li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <!-- Info -->
+    <div class="footer__col reveal" style="transition-delay:.15s">
+      <h4>Ma'lumot</h4>
+      <ul>
+        <li><a href="/about/">Haqimizda</a></li>
+        <li><a href="/contact/">Aloqa</a></li>
+        <li><a href="/privacy/">Maxfiylik</a></li>
+        <li><a href="/api/v1/">API</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer__bottom">
+    <span>© {% now "Y" %} Kokand Guidance. Barcha huquqlar himoyalangan.</span>
+    <span>❤️ Kokand uchun yasalgan</span>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     BASE JAVASCRIPT
+══════════════════════════════════════════════════════════════════════════ -->
+<script>
+/* ─────────────── NAVBAR SCROLL BEHAVIOUR ─────────────── */
+(function () {
+  const navbar   = document.getElementById('navbar');
+  const isHome   = document.body.classList.contains('page--home');
+
+  function onScroll() {
+    const scrolled = window.scrollY > 60;
+    if (isHome) {
+      navbar.classList.toggle('navbar--scrolled', scrolled);
+    }
+  }
+
+  if (isHome) {
+    navbar.classList.add('navbar--transparent');
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+})();
+
+/* ─────────────── MOBILE BURGER ─────────────── */
+(function () {
+  const burger = document.getElementById('navBurger');
+  const menu   = document.getElementById('mobileMenu');
+  if (!burger || !menu) return;
+
+  burger.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    burger.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!burger.contains(e.target) && !menu.contains(e.target)) {
+      menu.classList.remove('open');
+      burger.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+  });
+})();
+
+/* ─────────────── USER DROPDOWN (desktop) ─────────────── */
+(function () {
+  const btn = document.getElementById('userMenuBtn');
+  if (!btn) return;
+  const dropdown = btn.closest('.navbar__dropdown');
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = dropdown.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open);
+  });
+
+  document.addEventListener('click', () => {
+    dropdown.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  });
+})();
+
+/* ─────────────── SCROLL REVEAL ─────────────── */
+(function () {
+  const els = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  if (!els.length) return;
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  els.forEach(el => io.observe(el));
+})();
+
+/* ─────────────── LANGUAGE SWITCHER ─────────────── */
+const LANG_KEY = 'kokand_lang';
+
+function setLang(lang) {
+  localStorage.setItem(LANG_KEY, lang);
+
+  // Active class on all lang buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === lang);
+  });
+
+  // i18n attribute swap
+  const t = window.__i18n?.[lang];
+  if (!t) return;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (t[key] !== undefined) el.placeholder = t[key];
+  });
+
+  document.getElementById('htmlRoot')?.setAttribute('lang', lang);
+}
+
+// Restore saved language on page load
+(function () {
+  const saved = localStorage.getItem(LANG_KEY) || 'uz';
+  // Mark active buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === saved);
+  });
+  // Trigger full swap only if translations loaded (home.js etc injects window.__i18n)
+  if (window.__i18n) setLang(saved);
+})();
+
+/* ─────────────── AUTH HELPERS ─────────────── */
+function authLogout(e) {
+  if (e) e.preventDefault();
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  window.location.href = '/auth/login/';
+}
+
+// Attach JWT access token to every API request automatically
+function apiFetch(url, options = {}) {
+  const token = localStorage.getItem('access_token');
+  const headers = { 'Content-Type': 'application/json', ...options.headers };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  return fetch(url, { ...options, headers });
+}
+
+// Auto-refresh token on 401
+async function apiFetchWithRefresh(url, options = {}) {
+  let res = await apiFetch(url, options);
+  if (res.status === 401) {
+    const refresh = localStorage.getItem('refresh_token');
+    if (!refresh) { authLogout(); return res; }
+
+    const ref = await fetch('/api/v1/auth/token/refresh/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh }),
+    });
+    if (ref.ok) {
+      const data = await ref.json();
+      localStorage.setItem('access_token', data.access);
+      res = await apiFetch(url, options);
+    } else {
+      authLogout();
+    }
+  }
+  return res;
+}
+
+/* ─────────────── FLASH HELPER (JS dan chaqirish uchun) ─────────────── */
+function showFlash(message, type = 'success') {
+  const container = document.getElementById('flashMessages')
+    || Object.assign(document.createElement('div'), {
+        id: 'flashMessages', className: 'flash-messages'
+       }) && document.body.appendChild(document.getElementById('flashMessages') || (() => {
+         const d = document.createElement('div');
+         d.id = 'flashMessages';
+         d.className = 'flash-messages';
+         document.body.appendChild(d);
+         return d;
+       })());
+
+  const flash = document.createElement('div');
+  flash.className = `flash flash--${type}`;
+  flash.innerHTML = `<span>${message}</span><button onclick="this.closest('.flash').remove()" aria-label="Yopish">✕</button>`;
+  container.appendChild(flash);
+  setTimeout(() => flash.remove(), 5000);
+}
+
+/* ─────────────── FAVOURITE TOGGLE (global) ─────────────── */
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.js-fav-btn');
+  if (!btn) return;
+  e.preventDefault();
+
+  const placeId = btn.dataset.placeId;
+  if (!placeId) return;
+
+  try {
+    const res = await apiFetchWithRefresh('/api/v1/favorites/toggle/', {
+      method: 'POST',
+      body: JSON.stringify({ place_id: placeId }),
+    });
+
+    if (res.status === 401) { window.location.href = '/auth/login/'; return; }
+
+    const data = await res.json();
+    const added = data.status === 'added';
+    btn.textContent = added ? '♥' : '♡';
+    btn.classList.toggle('is-active', added);
+    btn.setAttribute('aria-label', added ? 'Sevimlidan olib tashlash' : 'Sevimlilarga qo\'shish');
+    showFlash(added ? 'Sevimlilarga qo\'shildi' : 'Sevimlidan olib tashlandi', added ? 'success' : 'warning');
+  } catch {
+    showFlash('Xatolik yuz berdi', 'error');
+  }
+});
+
+/* ─────────────── FLASH AUTO-DISMISS ─────────────── */
+setTimeout(() => {
+  document.querySelectorAll('.flash').forEach(el => el.remove());
+}, 6000);
+</script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

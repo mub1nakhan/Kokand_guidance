@@ -87,6 +87,9 @@ urlpatterns = [
 
 ]
 
+
+
+
 # Media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -96,3 +99,115 @@ from django.urls import path
 urlpatterns = [
     path("admin/", admin.site.urls),
 ]
+from django.urls import path
+from django.views.generic import TemplateView
+ 
+ 
+# Qisqa yozuv uchun alias
+def page(template, name=None):
+    """TemplateView shortcut."""
+    return TemplateView.as_view(template_name=template)
+ 
+ 
+urlpatterns = [
+ 
+    # ── Asosiy ────────────────────────────────────────────────────────────
+    path(
+        "",
+        page("home/index.html"),
+        name="home",
+    ),
+ 
+    # ── Joylar ────────────────────────────────────────────────────────────
+    path(
+        "places/",
+        page("places/list.html"),
+        name="place-list-page",
+    ),
+    path(
+        "places/<slug:slug>/",
+        page("places/detail.html"),
+        name="place-detail-page",
+    ),
+ 
+    # ── Marshrutlar ───────────────────────────────────────────────────────
+    path(
+        "routes/",
+        page("routes/list.html"),
+        name="route-list-page",
+    ),
+    path(
+        "routes/<slug:slug>/",
+        page("routes/detail.html"),
+        name="route-detail-page",
+    ),
+ 
+    # ── Kategoriyalar ─────────────────────────────────────────────────────
+    path(
+        "categories/",
+        page("categories/list.html"),
+        name="category-list-page",
+    ),
+ 
+    # ── Xarita ────────────────────────────────────────────────────────────
+    path(
+        "map/",
+        page("map/index.html"),
+        name="map-page",
+    ),
+ 
+    # ── Auth ──────────────────────────────────────────────────────────────
+    path(
+        "auth/login/",
+        page("auth/login.html"),
+        name="login-page",
+    ),
+    path(
+        "auth/register/",
+        page("auth/register.html"),
+        name="register-page",
+    ),
+ 
+    # ── Profil ────────────────────────────────────────────────────────────
+    path(
+        "profile/",
+        page("users/profile.html"),
+        name="profile-page",
+    ),
+    path(
+        "profile/edit/",
+        page("users/profile_edit.html"),
+        name="profile-edit-page",
+    ),
+    path(
+        "profile/<uuid:id>/",
+        page("users/public_profile.html"),
+        name="public-profile-page",
+    ),
+ 
+    # ── Sevimlilar ────────────────────────────────────────────────────────
+    path(
+        "favorites/",
+        page("favorites/list.html"),
+        name="favorites-page",
+    ),
+ 
+    # ── Statik sahifalar ──────────────────────────────────────────────────
+    path(
+        "about/",
+        page("static_pages/about.html"),
+        name="about-page",
+    ),
+    path(
+        "contact/",
+        page("static_pages/contact.html"),
+        name="contact-page",
+    ),
+    path(
+        "privacy/",
+        page("static_pages/privacy.html"),
+        name="privacy-page",
+    ),
+ 
+]
+ 
