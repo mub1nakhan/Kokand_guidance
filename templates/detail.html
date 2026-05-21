@@ -718,17 +718,7 @@ async function loadPlace() {
     placeData  = p;
 
     document.title = `${p.title} — Kokand Guidance`;
-    document.getElementById('bcTitle').textContent = p.title;
-
-    renderGallery(p);
-    renderHeader(p);
-    renderSidebar(p);
-    renderHours(p.working_hours || {});
-
-    document.getElementById('detailSkeleton').style.display = 'none';
-    document.getElementById('detailContent').style.display  = 'block';
-    document.getElementById('detailSidebar').style.display  = 'flex';
-
+    document.getElementById('bcTitle').textContent = p.tit
     // Fav btn
     const favBtn = document.getElementById('favBtn');
     favBtn.textContent    = p.is_favorited ? '♥' : '♡';
