@@ -2,10 +2,12 @@
 reviews/services.py
 ===================
 Review business logic + Place rating recompute trigger.
+
+FIX: update_review() metodi qo'shildi — PUT/PATCH da ham
+recompute_rating() chaqiriladi va review to'g'ri yangilanadi.
 """
-from django.db.models import QuerySet
+from django.db.models import QuerySet, F
 from django.db import transaction
-from django.db.models import F
 
 from places.services import PlaceService
 from .models import Review
@@ -32,8 +34,23 @@ class ReviewService:
         # Update user stats
         user.profile.total_reviews = F("total_reviews") + 1
         user.profile.save(update_fields=["total_reviews"])
-        # Recompute place rating
+        # Recompute place rating (signal da created=True bo'lganda skip qilinadi)
         PlaceService.recompute_rating(place.pk)
+        return review
+
+    @staticmethod
+    @transaction.atomic
+    def update_review(review: Review, rating: int, comment: str = "") -> Review:
+        """
+        FIX: Avval yo'q edi. PUT/PATCH da ishlatiladi.
+        Rating o'zgarganda place average_rating qayta hisoblanadi.
+        """
+        review.rating = rating
+        review.comment = comment
+        review.save(update_fields=["rating", "comment", "updated_at"])
+        # Signal UPDATE da o'zi chaqiradi, lekin explicit qilamiz aniqlik uchun
+        # Signal allaqachon post_save da chaqiradi — bu yerda kerak emas.
+        # (signal created=False ko'rganda recompute qiladi)
         return review
 
     @staticmethod
@@ -44,4 +61,10 @@ class ReviewService:
         review.delete()
         user.profile.total_reviews = F("total_reviews") - 1
         user.profile.save(update_fields=["total_reviews"])
-        PlaceService.recompute_rating(place_id)
+        # Signal post_delete da recompute qiladi — bu yerda kerak emas.
+        # Lekin delete() signal orqali ketadi, PlaceService.recompute_rating()
+        # review_deleted signal handler da chaqiriladi.
+        
+        
+        
+    

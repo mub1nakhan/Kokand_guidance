@@ -5,6 +5,10 @@ ReviewImageSerializer    — gallery images inside a review
 ReviewListSerializer     — compact, for place detail page
 ReviewDetailSerializer   — full review with images
 ReviewWriteSerializer    — create / update by authenticated user
+ReviewImageUploadSerializer — upload images to an existing review
+
+FIX: ReviewWriteSerializer dan keraksiz validate_rating olib tashlandi
+     (model validators allaqachon tekshiradi — DRF ularni o'zi ishlatadi).
 """
 
 from rest_framework import serializers
@@ -59,19 +63,38 @@ class ReviewDetailSerializer(ReviewListSerializer):
 class ReviewWriteSerializer(serializers.ModelSerializer):
     """
     Authenticated user creates or updates their own review.
-    `place` is injected from the URL kwarg in the view, not the request body.
-    """
-    images = ReviewImageSerializer(many=True, read_only=True)
+    `place` and `user` are injected from the view — not from request body.
 
+    FIX: validate_rating olib tashlandi — model validators (Min/MaxValueValidator)
+         DRF tomonidan avtomatik ishlatiladi, duplicate validation kerak emas.
+    """
     class Meta:
         model  = Review
-        fields = ["rating", "comment", "images"]
+        fields = ["rating", "comment"]
 
-    def validate_rating(self, value):
-        if value not in range(1, 6):
-            raise serializers.ValidationError("Rating must be between 1 and 5.")
+
+# ---------------------------------------------------------------------------
+# ReviewImage upload
+# ---------------------------------------------------------------------------
+
+class ReviewImageUploadSerializer(serializers.ModelSerializer):
+    """
+    POST /places/<slug>/reviews/<pk>/images/
+    Foydalanuvchi o'z reviewiga rasm yuklaydi.
+    `review` context orqali view dan inject qilinadi.
+    """
+    class Meta:
+        model  = ReviewImage
+        fields = ["image", "order"]
+
+    def validate_order(self, value):
+        review = self.context.get("review")
+        if review and ReviewImage.objects.filter(review=review, order=value).exists():
+            raise serializers.ValidationError(
+                f"Bu review da {value}-tartib raqamli rasm allaqachon mavjud."
+            )
         return value
 
     def create(self, validated_data):
-        # place and user injected via perform_create in the view
-        return Review.objects.create(**validated_data)
+        review = self.context["review"]
+        return ReviewImage.objects.create(review=review, **validated_data)
