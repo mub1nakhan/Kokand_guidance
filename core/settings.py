@@ -11,11 +11,10 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ---------------------------------------------------------------------- Security
-SECRET_KEY = config("SECRET_KEY", default="django-insecure-change-me-in-production")
-DEBUG      = config("DEBUG", default=True, cast=bool)
+SECRET_KEY = config("SECRET_KEY")  # No default, must be set in environment
+DEBUG      = config("DEBUG", default=False, cast=bool)
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS",
-    default="localhost,127.0.0.1",
     cast=lambda v: [s.strip() for s in v.split(",")],
 )
 
@@ -55,6 +54,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # Security headers for production
+    # Consider using django-csp for Content-Security-Policy
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -76,6 +77,41 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "core.wsgi.application"
+
+# ---------------------------------------------------------------------- Security for Production
+if not DEBUG:
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    # Add Content-Security-Policy header if using django-csp
+
+# ---------------------------------------------------------------------- Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] {levelname} {name} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
 
 # ---------------------------------------------------------------------- Database
 DATABASES = {

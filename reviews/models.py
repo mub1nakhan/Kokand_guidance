@@ -151,6 +151,9 @@ class ReviewImage(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["review", "order"], name="unique_review_image_order"),
         ]
+        indexes = [
+            models.Index(fields=["review", "order"], name="idx_review_image_order"),
+        ]
 
     def __str__(self) -> str:
         return f"Review#{self.review_id} — image #{self.order}"

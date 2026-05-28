@@ -26,7 +26,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
-from common.models import BaseModel
+from common.models import BaseModel, ActiveManager
 from places.models import Place
 
 
@@ -133,10 +133,15 @@ class TourRoute(BaseModel):
     meta_title       = models.CharField(max_length=70,  blank=True, verbose_name=_("Meta title"))
     meta_description = models.CharField(max_length=160, blank=True, verbose_name=_("Meta description"))
 
+
+    # Managers
+    objects     = ActiveManager()
+    all_objects = models.Manager()
+
     class Meta:
         verbose_name        = _("Tour route")
         verbose_name_plural = _("Tour routes")
-        ordering            = ["-is_featured", "title"]
+        ordering            = ["-is_featured", "-created_at"]
         indexes = [
             models.Index(fields=["is_featured", "is_active"],  name="idx_route_featured_active"),
             models.Index(fields=["transport_mode", "is_active"], name="idx_route_mode_active"),

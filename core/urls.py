@@ -25,6 +25,7 @@ from django.conf.urls.static import static
 from django.urls import path, include
 
 from users.urls import auth_urlpatterns
+from django.views.generic import TemplateView
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
@@ -59,6 +60,11 @@ urlpatterns = [
     # ── Favorites ──────────────────────────────────────────────────────────
     path("api/v1/favorites/", include("favorites.urls")),
 
+]
+
+# ── Frontend template sahifalari ────────────────────────────────────────────
+urlpatterns += [
+    path("", include("core.frontend_urls")),
 ]
 
 # ── Media & Static — faqat development rejimida ────────────────────────────

@@ -65,10 +65,12 @@ class PlaceService:
         Place.all_objects.filter(pk=place_id).update(view_count=F("view_count") + 1)
 
     @staticmethod
+    @transaction.atomic
     def recompute_rating(place_id) -> None:
         """
         Called from reviews post_save / post_delete signal.
         Uses DB aggregation — never application-layer averaging.
+        Now atomic to avoid race conditions.
         """
         from django.db.models import Avg, Count
         from reviews.models import Review

@@ -12,6 +12,7 @@ from rest_framework import generics, permissions
 
 from common.permissions import IsAdminOrReadOnly
 from .models import Category
+from .services import CategoryService
 from .serializers import (
     CategoryDetailSerializer,
     CategoryListSerializer,
@@ -21,7 +22,9 @@ from .serializers import (
 
 class CategoryListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAdminOrReadOnly]
-    queryset = Category.objects.filter(is_active=True).order_by("title")
+
+    def get_queryset(self):
+        return CategoryService.get_list_queryset()
 
     def get_serializer_class(self):
         if self.request.method == "POST":
@@ -32,7 +35,9 @@ class CategoryListCreateView(generics.ListCreateAPIView):
 class CategoryRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdminOrReadOnly]
     lookup_field = "slug"
-    queryset = Category.objects.filter(is_active=True)
+
+    def get_queryset(self):
+        return CategoryService.get_list_queryset()
 
     def get_serializer_class(self):
         if self.request.method in ("PUT", "PATCH"):
